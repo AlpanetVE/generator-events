@@ -10,7 +10,6 @@
 
 // Prohibit direct script loading.
 defined( 'ABSPATH' ) || die( 'No direct script access allowed!' );
-
 		
 /**
  * Base Controller class
@@ -21,6 +20,14 @@ defined( 'ABSPATH' ) || die( 'No direct script access allowed!' );
  */
 class GeneratorEvents_Controller {
 	public $parent_page = 'middle';
+
+	/**
+	 * Actions that have a view and admin menu or nav tab menu entry.
+	 *
+	 * @since 1.0.0
+	 * @var array
+	 */
+	protected $view_actions = array();
 
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'alpage_menu' ) );
@@ -58,75 +65,49 @@ class GeneratorEvents_Controller {
 		 
         $perms = 'export';
         $perms = apply_filters($wpfront_caps_translator, $perms);
-        $main_menu = add_menu_page('Generator Events Plugin', 'GeneratorEvents', $perms, 'GeneratorEvents', 'alpage_get_menu', $icon_svg,$position);
+        $main_menu = add_menu_page('Generator Events Plugin', 'GeneratorEvents', $perms, 'GeneratorSites', 'alpage_get_menu', $icon_svg,$position);
 
         $perms = 'export';
         $perms = apply_filters($wpfront_caps_translator, $perms);
-		$lang_txt = __('Events', 'GeneratorEvents');
-        $page_packages = add_submenu_page('GeneratorEvents', $lang_txt, $lang_txt, $perms, 'GeneratorEvents', 'alpage_get_menu');
+		$lang_txt = __('Generate Sites', 'GeneratorEvents');
+        $page_settings = add_submenu_page('GeneratorSites', $lang_txt, $lang_txt, $perms, 'GeneratorSites', 'alpage_get_menu');
 
         $perms = 'manage_options';
         $perms = apply_filters($wpfront_caps_translator, $perms);
-		$lang_txt = __('Sites', 'GeneratorEvents');
-        $page_settings = add_submenu_page('GeneratorEvents', $lang_txt, $lang_txt, $perms, 'GeneratorSites', 'alpage_get_menu');
-		
-    }
+		$lang_txt = __('Generate Events', 'GeneratorEvents');
+        $page_packages = add_submenu_page('GeneratorSites', $lang_txt, $lang_txt, $perms, 'GeneratorEvents', 'alpage_get_menu');
 
-	/**
+    }
+    /**
 	 * Init list of actions that have a view with their titles/names/caps.
 	 *
 	 * @since 1.0.0
 	 */
 	protected function init_view_actions() {
 		$this->view_actions = array(
-			'list' => array(
+			'GeneratorSites' => array(
 				'show_entry' => true,
-				'page_title' => __( 'All Tables', 'tablepress' ),
-				'admin_menu_title' => __( 'All Tables', 'tablepress' ),
-				'nav_tab_title' => __( 'All Tables', 'tablepress' ),
-				'required_cap' => 'tablepress_list_tables',
+				'page_title' => __( 'All Sites', 'GeneratorEvents' ),
+				'admin_menu_title' => __( 'All Sites', 'GeneratorEvents' ),
+				'nav_tab_title' => __( 'All Sites', 'GeneratorEvents' ),
 			),
-			'add' => array(
+			'addSite' => array(
 				'show_entry' => true,
-				'page_title' => __( 'Add New Table', 'tablepress' ),
-				'admin_menu_title' => __( 'Add New Table', 'tablepress' ),
-				'nav_tab_title' => __( 'Add New', 'tablepress' ),
-				'required_cap' => 'tablepress_add_tables',
+				'page_title' => __( 'Add New Site', 'GeneratorEvents' ),
+				'admin_menu_title' => __( 'Add New Site', 'GeneratorEvents' ),
+				'nav_tab_title' => __( 'Add New', 'GeneratorEvents' ),
 			),
-			'edit' => array(
+			'editSite' => array(
 				'show_entry' => false,
-				'page_title' => __( 'Edit Table', 'tablepress' ),
+				'page_title' => __( 'Edit Site', 'GeneratorEvents' ),
 				'admin_menu_title' => '',
 				'nav_tab_title' => '',
-				'required_cap' => 'tablepress_edit_tables',
 			),
-			'import' => array(
+			'GeneratorEvents' => array(
 				'show_entry' => true,
-				'page_title' => __( 'Import a Table', 'tablepress' ),
-				'admin_menu_title' => __( 'Import a Table', 'tablepress' ),
-				'nav_tab_title' => _x( 'Import', 'navigation bar', 'tablepress' ),
-				'required_cap' => 'tablepress_import_tables',
-			),
-			'export' => array(
-				'show_entry' => true,
-				'page_title' => __( 'Export a Table', 'tablepress' ),
-				'admin_menu_title' => __( 'Export a Table', 'tablepress' ),
-				'nav_tab_title' => _x( 'Export', 'navigation bar', 'tablepress' ),
-				'required_cap' => 'tablepress_export_tables',
-			),
-			'options' => array(
-				'show_entry' => true,
-				'page_title' => __( 'Plugin Options', 'tablepress' ),
-				'admin_menu_title' => __( 'Plugin Options', 'tablepress' ),
-				'nav_tab_title' => __( 'Plugin Options', 'tablepress' ),
-				'required_cap' => 'tablepress_access_options_screen',
-			),
-			'about' => array(
-				'show_entry' => true,
-				'page_title' => __( 'About', 'tablepress' ),
-				'admin_menu_title' => __( 'About TablePress', 'tablepress' ),
-				'nav_tab_title' => __( 'About', 'tablepress' ),
-				'required_cap' => 'tablepress_access_about_screen',
+				'page_title' => __( 'All Events', 'GeneratorEvents' ),
+				'admin_menu_title' => __( 'All Events', 'GeneratorEvents' ),
+				'nav_tab_title' => __( 'All Events', 'GeneratorEvents' ),
 			),
 		);
 
@@ -137,6 +118,58 @@ class GeneratorEvents_Controller {
 		 *
 		 * @param array $view_actions The available Views/Actions and their parameters.
 		 */
-		$this->view_actions = apply_filters( 'alpage_admin_view_actions', $this->view_actions );
+		$this->view_actions = apply_filters( 'generatorevents_admin_view_actions', $this->view_actions );
 	}
+    /**
+	 * Prepare the rendering of an admin screen, by determining the current action, loading necessary data and initializing the view.
+	 *
+	 * @since 1.0.0
+	 */
+	public function load_admin_page() {
+		
+		// Determine the action from either the GET parameter (for sub-menu entries, and the main admin menu entry).
+		$action = ( ! empty( $_GET['page'] ) ) ? $_GET['page'] : 'generatorsites'; // default action is list
+		
+		// Check if action is a supported action, and whether the user is allowed to access this screen.
+		if ( ! isset( $this->view_actions[ $action ] ) || ! current_user_can( $this->view_actions[ $action ]['required_cap'] ) ) {
+			wp_die( __( 'You do not have sufficient permissions to access this page.', 'default' ), 403 );
+		}
+
+		// Set the $typenow global to the current CPT ourselves, as WP_Screen::get() does not determine the CPT correctly.
+		// This is necessary as the WP Admin Menu can otherwise highlight wrong entries, see https://github.com/TobiasBg/TablePress/issues/24.
+		if ( isset( $_GET['post_type'] ) && post_type_exists( $_GET['post_type'] ) ) {
+			$GLOBALS['typenow'] = $_GET['post_type'];
+		}
+
+		// Pre-define some view data.
+		$data = array(
+			'view_actions' => $this->view_actions,
+			'message' => ( ! empty( $_GET['message'] ) ) ? $_GET['message'] : false,
+		);
+
+
+
+		// Depending on the action, load more necessary data for the corresponding view.
+		switch ( $action ) {
+			case 'generatorsites':
+				break;
+			case 'addsite':
+				break;
+			case 'editsite':
+				break;
+		}
+
+		/**
+		 * Filter the data that is passed to the current TablePress View.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array  $data   Data for the view.
+		 * @param string $action The current action for the view.
+		 */
+		$data = apply_filters( 'tablepress_view_data', $data, $action );
+
+		// Prepare and initialize the view.
+		$this->view = GeneratorEvents::load_view( $action, $data );
+	}	
 }

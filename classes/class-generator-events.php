@@ -167,6 +167,24 @@ abstract class GeneratorEvents {
 		 self::load_file( 'class-controller.php', 'classes' );
 		 new GeneratorEvents_Controller();
 	}
+	/**
+	 * Create a new instance of the $view, which is stored in the "views" subfolder, and set it up with $data.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $view Name of the view to load.
+	 * @param array  $data Optional. Parameters/PHP variables that shall be available to the view.
+	 * @return object Instance of the initialized view, already set up, just needs to be rendered.
+	 */
+	public static function load_view( $view, array $data = array() ) {
+		// View Base Class.
+		self::load_file( 'class-view.php', 'classes' );
+		// Make first letter uppercase for a better looking naming pattern.
+		$ucview = ucfirst( $view );
+		$the_view = self::load_class( "TablePress_{$ucview}_View", "view-{$view}.php", 'views' );
+		$the_view->setup( $view, $data );
+		return $the_view;
+	}
 
 
 }
