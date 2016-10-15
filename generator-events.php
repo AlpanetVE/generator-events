@@ -51,3 +51,22 @@ if (is_admin() == true) {
 
 	//add_action( 'admin_menu', array( 'GeneratorEvents_Controller', 'alpage_menu' ) );
 }
+
+/**
+ * PAGE VIEWS
+ * @static
+ */
+function alpage_get_menu( ) {
+    $current_page = isset($_REQUEST['page']) ? esc_html($_REQUEST['page']) : 'GeneratorSites';
+    include('classes/class-view.php');
+    switch ($current_page) {
+        case 'GeneratorSites':	include('views/backend/view-generatorsites.php');
+            break;
+        case 'addSite': 		include('views/backend/view-addsite.php');
+            break;
+        case 'editSite': 		include('views/backend/view-editsite.php');
+            break;
+        case 'GeneratorEvents': include('views/backend/view-generatorevents.php');
+            break;
+    }
+}
