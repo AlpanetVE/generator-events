@@ -60,7 +60,15 @@ function alpage_get_menu( ) {
     $current_page = isset($_REQUEST['page']) ? esc_html($_REQUEST['page']) : 'GeneratorSites';
     include('classes/class-view.php');
     switch ($current_page) {
-        case 'GeneratorSites':	include('views/backend/view-generatorsites.php');
+        case 'GeneratorSites':	
+        	include('views/backend/view-generatorsites.php');
+        	echo sprintf('<div class="wrap">');
+        	echo sprintf( '<h2>%s <a class="add-new-h2" href="%s">%s</a></h2>', __('Site', 'wptg-plugin'), admin_url('admin.php?page='.$page_slug.'&action=add'), __('Add New', 'wptg-plugin') );
+        	
+        	$ObjList = new GeneratorSiteList();
+        	$ObjList ->show();
+        	echo sprintf('</div>');
+
             break;
         case 'addSite': 		include('views/backend/view-addsite.php');
             break;

@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || die( 'No direct script access allowed!' );
 
-abstract class GeneratorEvents {
+class GeneratorEvents {
 	/**
 	 * TablePress version.
 	 *
@@ -11,7 +11,7 @@ abstract class GeneratorEvents {
 	 * @since 1.0.0
 	 * @const string
 	 */
-	const version = '1.7';
+	const version = '1.0.0';
 
 	/**
 	 * TablePress internal plugin version ("options scheme" version).
@@ -74,7 +74,18 @@ abstract class GeneratorEvents {
 	 * @since 1.0.0
 	 * @var array
 	 */
-	protected $view_actions = array();
+	protected $view_actions = array();	
+
+	private $db;
+
+	function __construct()
+	{
+		global $wpdb;
+		$this->db = $wpdb;
+		$this->table_sites = $wpdb->prefix."alpage_site_fun";
+		$this->table_events = $wpdb->prefix."alpage_site_event";
+		$this->db_version = "1.0";
+	}
 
 	/* ACTIVATION 
       Only called when plugin is activated */
@@ -83,10 +94,10 @@ abstract class GeneratorEvents {
         global $wpdb;
 
 		$sql = array();
-		
+		$objGeneratorEvents= new GeneratorEvents();
         //Only update database on version update
-        $table_site_fun 	= $wpdb->prefix."alpage_site_fun";
-		$table_site_event 	= $wpdb->prefix."alpage_site_event";
+        $table_site_fun 	= $objGeneratorEvents->table_sites;
+		$table_site_event 	= $objGeneratorEvents->table_events;
 
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_site_fun}` (
 			`id_fun_site` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -123,6 +134,23 @@ abstract class GeneratorEvents {
 	 */
 	public static function plugin_deactivation( ) {
 		//No actions needed yet
+	}
+
+	public static function get_instance(){
+		static $instance = null;
+		if($instance == null){
+			$instance = new GeneratorEvents();
+		}
+		return $instance;
+	}
+	public function get_page_items($curr_page, $per_page){
+		$start = (($curr_page-1)*$per_page);
+		$query = "SELECT * FROM $this->table_name ORDER BY id DESC LIMIT $start, $per_page";
+		return $this->db->get_results( $query, ARRAY_A );
+	}
+	public function getCountSites(){
+		$count = $this->db->get_var("SELECT COUNT(*) FROM $this->table_sites");
+		return isset($count)?$count:0;
 	}
 
 	public static function run() {
