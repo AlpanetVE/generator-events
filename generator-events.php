@@ -58,7 +58,6 @@ if (is_admin() == true) {
  */
 function alpage_get_menu( ) {
     $current_page = isset($_REQUEST['page']) ? esc_html($_REQUEST['page']) : 'GeneratorSites';
-    include('classes/class-view.php');
     switch ($current_page) {
         case 'GeneratorSites':	
         	include('views/backend/view-generatorsites.php');

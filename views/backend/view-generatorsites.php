@@ -47,8 +47,8 @@ class GeneratorSiteList extends WP_List_Table {
 			'cb'	=> '<input type="checkbox" />',
 			'id'	=> __('ID', 'wptg-plugin'),
 			'name'	=> __('Name', 'wptg-plugin'),
-			'rows'	=> __('Rows', 'wptg-plugin'),
-			'cols'	=> __('Columns', 'wptg-plugin')
+			'latitude'	=> __('Latitude', 'wptg-plugin'),
+			'longitude'	=> __('Longitude', 'wptg-plugin')
 		);
 		return $columns;
 	}

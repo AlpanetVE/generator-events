@@ -100,17 +100,18 @@ class GeneratorEvents {
 		$table_site_event 	= $objGeneratorEvents->table_events;
 
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_site_fun}` (
-			`id_fun_site` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			`name` varchar(255) NOT NULL,
 			`addres` varchar(255) DEFAULT NULL,
-			`coordinates` varchar(255) DEFAULT NULL,
+			`latitude` varchar(255) DEFAULT NULL,
+			`longitude` varchar(255) DEFAULT NULL,
 			`rating` int(1) DEFAULT NULL,
 			`environment` varchar(255) DEFAULT NULL,
 			`opening_hour` time DEFAULT NULL,
-			`closed_hour` time DEFAULT NULL)";
+			`closed_hour` time DEFAULT NULL)";			 
 
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_site_event}` (
-			`id_site_event` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			`id_site_fun` int(11) UNSIGNED NOT NULL,
 			`name` varchar(255) NOT NULL,
 			`opening_hour` time DEFAULT NULL,
@@ -145,7 +146,7 @@ class GeneratorEvents {
 	}
 	public function get_page_items($curr_page, $per_page){
 		$start = (($curr_page-1)*$per_page);
-		$query = "SELECT * FROM $this->table_name ORDER BY id DESC LIMIT $start, $per_page";
+		$query = "SELECT * FROM $this->table_sites ORDER BY id DESC LIMIT $start, $per_page";
 		return $this->db->get_results( $query, ARRAY_A );
 	}
 	public function getCountSites(){
@@ -154,8 +155,6 @@ class GeneratorEvents {
 	}
 
 	public static function run() {
-		$controller = 'admin';
-
 		self::$controller = self::load_controller( $controller );
 	}
 	/**
@@ -168,15 +167,7 @@ class GeneratorEvents {
 	 */
 	public static function load_file( $file, $folder ) {
 		$full_path = ALPAGE_ABSPATH . $folder . '/' . $file;
-		/**
-		 * Filter the full path of a file that shall be loaded.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $full_path Full path of the file that shall be loaded.
-		 * @param string $file      File name of the file that shall be loaded.
-		 * @param string $folder    Folder name of the file that shall be loaded.
-		 */
+		
 		$full_path = apply_filters( 'alpage_load_file_full_path', $full_path, $file, $folder );
 		if ( $full_path ) {
 			require_once $full_path;
@@ -190,28 +181,10 @@ class GeneratorEvents {
 	 * @param string $controller Name of the controller.
 	 * @return object Instance of the initialized controller.
 	 */
-	public static function load_controller( $controller ) {
+	public static function load_controller() {
 		// Controller Base Class.
 		 self::load_file( 'class-controller.php', 'classes' );
 		 new GeneratorEvents_Controller();
-	}
-	/**
-	 * Create a new instance of the $view, which is stored in the "views" subfolder, and set it up with $data.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $view Name of the view to load.
-	 * @param array  $data Optional. Parameters/PHP variables that shall be available to the view.
-	 * @return object Instance of the initialized view, already set up, just needs to be rendered.
-	 */
-	public static function load_view( $view, array $data = array() ) {
-		// View Base Class.
-		self::load_file( 'class-view.php', 'classes' );
-		// Make first letter uppercase for a better looking naming pattern.
-		$ucview = ucfirst( $view );
-		$the_view = self::load_class( "TablePress_{$ucview}_View", "view-{$view}.php", 'views' );
-		$the_view->setup( $view, $data );
-		return $the_view;
 	}
 
 
