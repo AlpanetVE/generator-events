@@ -58,22 +58,25 @@ if (is_admin() == true) {
  */
 function alpage_get_menu( ) {
     $current_page = isset($_REQUEST['page']) ? esc_html($_REQUEST['page']) : 'GeneratorSites';
+
+    if(isset($_REQUEST['action2']) && !empty($_REQUEST['action2']) && $_REQUEST['action2'] != -1 && $_REQUEST['action'] == -1)
+        $_REQUEST['action'] = $_REQUEST['action2'];
+
+    $action = isset($_REQUEST['action']) ? esc_html($_REQUEST['action']) : 'list';
+
+
     switch ($current_page) {
         case 'GeneratorSites':	
         	include('views/backend/view-generatorsites.php');
-        	echo sprintf('<div class="wrap">');
-        	echo sprintf( '<h2>%s <a class="add-new-h2" href="%s">%s</a></h2>', __('Site', 'wptg-plugin'), admin_url('admin.php?page='.$page_slug.'&action=add'), __('Add New', 'wptg-plugin') );
-        	
-        	$ObjList = new GeneratorSiteList();
-        	$ObjList ->show();
-        	echo sprintf('</div>');
+            $ObjList = new GeneratorSiteList();
+            $ObjList ->do_action($action);
 
             break;
-        case 'addSite': 		include('views/backend/view-addsite.php');
-            break;
-        case 'editSite': 		include('views/backend/view-editsite.php');
-            break;
-        case 'GeneratorEvents': include('views/backend/view-generatorevents.php');
+        case 'GeneratorEvents': 
+            include('views/backend/view-generatorsites.php');
+            $ObjList = new GeneratorSiteList();
+            $ObjList ->do_action($action);
+            
             break;
     }
 }

@@ -108,7 +108,7 @@ class GeneratorEvents {
 			`rating` int(1) DEFAULT NULL,
 			`environment` varchar(255) DEFAULT NULL,
 			`opening_hour` time DEFAULT NULL,
-			`closed_hour` time DEFAULT NULL)";			 
+			`closed_hour` time DEFAULT NULL)";
 
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_site_event}` (
 			`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -153,7 +153,19 @@ class GeneratorEvents {
 		$count = $this->db->get_var("SELECT COUNT(*) FROM $this->table_sites");
 		return isset($count)?$count:0;
 	}
+	public function deleteSites($id){
+		global $wpdb;		
 
+		if(is_array($id))
+			$id = sprintf('(%s)', implode(',', $id));
+		else {
+			$id = sprintf('(%d)', $id);
+		}
+        
+		$query = "DELETE FROM $this->table_sites WHERE id IN $id";
+		return $wpdb->query($query);
+	}
+	
 	public static function run() {
 		self::$controller = self::load_controller( $controller );
 	}
@@ -186,6 +198,7 @@ class GeneratorEvents {
 		 self::load_file( 'class-controller.php', 'classes' );
 		 new GeneratorEvents_Controller();
 	}
+
 
 
 }
