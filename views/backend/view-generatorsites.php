@@ -166,18 +166,19 @@ class GeneratorSiteList extends WP_List_Table {
 		<?php
 	}
 	function addAction(){
-		var_dump($_REQUEST['submit']);
+		
 		if (isset($_REQUEST['submit']) && !empty($_REQUEST['submit']))
 			$action='AddAndList';
 		else
-			$action='addForm';
+			$action='showAddForm';
 		
+
 		switch ($action) {
  			case 'AddAndList':
  				$this->add();
  				$this->show();
  			break;
- 			case 'addForm':
+ 			case 'showAddForm':
  				$this->showAdd();
  			break;
  		}
