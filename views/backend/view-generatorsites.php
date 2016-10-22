@@ -117,7 +117,7 @@ class GeneratorSiteList extends WP_List_Table {
 
 	
 
-	function showAdd(){
+	function showForm(){
 		?>
 		<div class="wrap">
 		<h1>Add Site Event</h1>
@@ -125,37 +125,37 @@ class GeneratorSiteList extends WP_List_Table {
 				<div class="form-wrap">
 					<div class="form-field">
 						<label for="table-name"><?php _e( 'Site Name', 'GeneratorEvents' ); ?>:</label>
-						<input type="text" name="table[name]" id="table-name" class="placeholder placeholder-active"  placeholder="<?php esc_attr_e( 'Enter Site Name here', 'GeneratorEvents' ); ?>" />
+						<input required type="text" name="GeForm[name]" id="table-name" class="placeholder placeholder-active"  placeholder="<?php esc_attr_e( 'Enter Site Name here', 'GeneratorEvents' ); ?>" />
 					</div>
 					<div class="form-field">
 						<label for="site-addres"><?php _e( 'Addres', 'GeneratorEvents' ); ?>:</label>
-						<textarea name="table[addres]" id="site-addres" class="placeholder placeholder-active" rows="4" placeholder="<?php echo esc_textarea( __( 'Enter Addres here', 'GeneratorEvents' ) ); ?>"></textarea>
+						<textarea name="GeForm[addres]" id="site-addres" class="placeholder placeholder-active" rows="4" placeholder="<?php echo esc_textarea( __( 'Enter Addres here', 'GeneratorEvents' ) ); ?>"></textarea>
 						<p><?php _e( 'Enter the address of the site.', 'GeneratorEvents' ); ?></p>
 					</div>
 
 
 					<div class="form-field">
 						<label for="table-latitude"><?php _e( 'Site latitude', 'GeneratorEvents' ); ?>:</label>
-						<input type="text" name="table[latitude]" id="table-latitude" class="placeholder placeholder-active"  placeholder="<?php esc_attr_e( 'Enter Site latitude here', 'GeneratorEvents' ); ?>" />
+						<input required type="text" name="GeForm[latitude]" id="table-latitude" class="placeholder placeholder-active"  placeholder="<?php esc_attr_e( 'Enter Site latitude here', 'GeneratorEvents' ); ?>" />
 					</div>
 					<div class="form-field">
 						<label for="table-longitude"><?php _e( 'Site longitude', 'GeneratorEvents' ); ?>:</label>
-						<input type="text" name="table[longitude]" id="table-longitude" class="placeholder placeholder-active"  placeholder="<?php esc_attr_e( 'Enter Site longitude here', 'GeneratorEvents' ); ?>" />
+						<input required type="text" name="GeForm[longitude]" id="table-longitude" class="placeholder placeholder-active"  placeholder="<?php esc_attr_e( 'Enter Site longitude here', 'GeneratorEvents' ); ?>" />
 					</div>
 
 					<div class="form-field">
 						<label for="table-environment"><?php _e( 'Site environment', 'GeneratorEvents' ); ?>:</label>
-						<input type="text" name="table[environment]" id="table-environment" class="placeholder placeholder-active"  placeholder="<?php esc_attr_e( 'Enter Site environment here', 'GeneratorEvents' ); ?>" />
+						<input type="text" name="GeForm[environment]" id="table-environment" class="placeholder placeholder-active"  placeholder="<?php esc_attr_e( 'Enter Site environment here', 'GeneratorEvents' ); ?>" />
 					</div>
 
 					<div class="form-field form-field-small">
 						<label for="table-opening_hour"><?php _e( 'Opening hour', 'GeneratorEvents' ); ?>:</label>
-						<input type="time" name="table[opening_hour]" id="table-opening_hour" title="<?php esc_attr_e( 'Opening hour', 'GeneratorEvents' ); ?>"/>
+						<input type="time" name="GeForm[opening_hour]" id="table-opening_hour" title="<?php esc_attr_e( 'Opening hour', 'GeneratorEvents' ); ?>"/>
 						<p><?php _e( 'Time to open the site.', 'GeneratorEvents' ); ?></p>
 					</div>
 					<div class="form-field form-field-small">
 						<label for="table-closed_hour"><?php _e( 'Closed hour', 'GeneratorEvents' ); ?>:</label>
-						<input type="time" name="table[closed_hour]" id="table-closed_hour" title="<?php esc_attr_e( 'CLosed hour.', 'GeneratorEvents' ); ?>" />
+						<input type="time" name="GeForm[closed_hour]" id="table-closed_hour" title="<?php esc_attr_e( 'CLosed hour.', 'GeneratorEvents' ); ?>" />
 						<p><?php _e( 'Time to close the site.', 'GeneratorEvents' ); ?></p>
 					</div>
 					<div class="clear"></div>
@@ -168,26 +168,46 @@ class GeneratorSiteList extends WP_List_Table {
 	function addAction(){
 		
 		if (isset($_REQUEST['submit']) && !empty($_REQUEST['submit']))
-			$action='AddAndList';
+			$action='UpdateAndList';
 		else
-			$action='showAddForm';
+			$action='showForm';
 		
-
 		switch ($action) {
  			case 'AddAndList':
  				$this->add();
  				$this->show();
  			break;
- 			case 'showAddForm':
- 				$this->showAdd();
+ 			case 'showForm':
+ 				$this->showForm();
  			break;
  		}
 	}
+	function editAction(){
+		
+		if (isset($_REQUEST['submit']) && !empty($_REQUEST['submit']))
+			$action='AddAndList';
+		else
+			$action='showForm';
+		
+		switch ($action) {
+ 			case 'AddAndList':
+ 				$this->edit();
+ 				$this->show();
+ 			break;
+ 			case 'showForm':
+ 				$this->showForm();
+ 			break;
+ 		}
+	}
+
+	function edit(){
+		return $this->db->editSite();
+	}
 	function add(){
-		return true;
+		return $this->db->addSite();
 	}
 	function delete(){
-		return $this->db->deleteSites($_GET['table']);
+		return $this->db->deleteSite($_GET['table']);
 	}
 
 	function do_action($action){
@@ -200,7 +220,7 @@ class GeneratorSiteList extends WP_List_Table {
  				$this->addAction();
  			break;
  			case 'edit':
- 				
+ 				$this->editAction();
  			break;
  			case 'delete':
  				$this->delete();

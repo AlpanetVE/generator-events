@@ -166,6 +166,55 @@ class GeneratorEvents {
 		return $wpdb->query($query);
 	}
 	
+
+
+	public function addSite(){
+		global $wpdb;
+		$data=$_POST['GeForm'];
+		if(is_array($data)){
+			$results = $wpdb->insert($this->table_sites, array(
+				'name'    		=>  isset($data['name']) ? $data['name'] : '',
+				'addres'	  	=>	isset($data['addres']) ? $data['addres'] : '',
+				'latitude'  	=>	isset($data['latitude']) ? $data['latitude'] : '',
+				'longitude' 	=>	isset($data['longitude']) ? $data['longitude'] : '',
+				'environment'	=>	isset($data['environment']) ? $data['environment'] : '',
+				'closed_hour'	=>	isset($data['closed_hour']) ? $data['closed_hour'] : '',
+				'opening_hour' 	=>	isset($data['opening_hour']) ? $data['opening_hour'] : ''
+			));
+			return $results;
+		}
+		return false;		
+	}
+	public function aditSite($id=null){
+		global $wpdb;
+		$wpdb->flush();
+		$id = !is_null($id) ? $id : $_POST['id_site'];
+
+		if (!empty($id)) {
+			$data=$_POST['GeForm'];
+			
+			$name 			= isset($data['name']) ? $data['name'] : '';
+			$addres 		= isset($data['addres']) ? $data['addres'] : '';
+			$latitude 		= isset($data['latitude']) ? $data['latitude'] : '';
+			$longitude 		= isset($data['longitude']) ? $data['longitude'] : '';
+			$environment 	= isset($data['environment']) ? $data['environment'] : '';
+			$closed_hour 	= isset($data['closed_hour']) ? $data['closed_hour'] : '';
+			$opening_hour 	= isset($data['opening_hour']) ? $data['opening_hour'] : '';
+
+			$sql   = "UPDATE `$this->table_sites` SET  
+			name = '$name',
+			addres = '$addres',
+			latitude = '$latitude',
+			longitude = '$longitude',
+			environment = '$environment',
+			closed_hour = '$closed_hour',
+			opening_hour = '$opening_hour' WHERE ID = {$id}";
+
+			return $wpdb->query($sql);
+		}
+		return false;
+	}
+
 	public static function run() {
 		self::$controller = self::load_controller( $controller );
 	}
