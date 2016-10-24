@@ -45,9 +45,9 @@ class GeneratorEventList extends WP_List_Table {
 	function get_columns(){
 		$columns = array(
 			'cb'	=> '<input type="checkbox" />',
-			'id'	=> __('ID', 'wptg-plugin'),
-			'name_site'	=> __('Site', 'wptg-plugin'),
+			'id'	=> __('ID', 'wptg-plugin'),			
 			'name'	=> __('Name', 'wptg-plugin'),
+			'name_site'	=> __('Site', 'wptg-plugin'),
 			'date'	=> __('Date', 'wptg-plugin')
 		);
 		return $columns;
@@ -107,7 +107,7 @@ class GeneratorEventList extends WP_List_Table {
 
 	function show(){
 		echo sprintf('<div class="wrap">');
-    	echo sprintf( '<h2>%s <a class="add-new-h2" href="%s">%s</a></h2>', __('Site', 'wptg-plugin'), admin_url('admin.php?page=GeneratorSites&action=add'), __('Add New', 'wptg-plugin') );
+    	echo sprintf( '<h2>%s <a class="add-new-h2" href="%s">%s</a></h2>', __('Events', 'wptg-plugin'), admin_url('admin.php?page=GeneratorSites&action=add'), __('Add New', 'wptg-plugin') );
         echo sprintf('<form method="GET"><input type="hidden" name="page" value="'.$_GET['page'].'">');
 	    $this->prepare_items();
 		$this->display();

@@ -149,9 +149,24 @@ class GeneratorEvents {
 		$query = "SELECT * FROM $this->table_sites ORDER BY id DESC LIMIT $start, $per_page";
 		return $this->db->get_results( $query, ARRAY_A );
 	}
+	
 	public function get_page_itemsEvent($curr_page, $per_page){
 		$start = (($curr_page-1)*$per_page);
-		$query = "SELECT * FROM $this->table_events ORDER BY id DESC LIMIT $start, $per_page";
+		$query = "SELECT
+					se.id,
+					se.id_site_fun,
+					se.name,
+					se.opening_hour,
+					se.closed_hour,
+					se.poster,
+					se.`date`,
+					se.clothing_type,
+					se.ticket_selling,
+					se.description,
+					sf.name as name_site
+					FROM
+					$this->table_events AS se
+					Inner Join $this->table_sites AS sf ON sf.id = se.id_site_fun ORDER BY id DESC LIMIT $start, $per_page";
 		return $this->db->get_results( $query, ARRAY_A );
 	}
 	public function getCountSites(){
