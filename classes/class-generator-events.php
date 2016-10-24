@@ -144,16 +144,25 @@ class GeneratorEvents {
 		}
 		return $instance;
 	}
-	public function get_page_items($curr_page, $per_page){
+	public function get_page_itemsSites($curr_page, $per_page){
 		$start = (($curr_page-1)*$per_page);
 		$query = "SELECT * FROM $this->table_sites ORDER BY id DESC LIMIT $start, $per_page";
+		return $this->db->get_results( $query, ARRAY_A );
+	}
+	public function get_page_itemsEvent($curr_page, $per_page){
+		$start = (($curr_page-1)*$per_page);
+		$query = "SELECT * FROM $this->table_events ORDER BY id DESC LIMIT $start, $per_page";
 		return $this->db->get_results( $query, ARRAY_A );
 	}
 	public function getCountSites(){
 		$count = $this->db->get_var("SELECT COUNT(*) FROM $this->table_sites");
 		return isset($count)?$count:0;
 	}
-	public function deleteSites($id){
+	public function getCountEvents(){
+		$count = $this->db->get_var("SELECT COUNT(*) FROM $this->table_events");
+		return isset($count)?$count:0;
+	}
+	public function deleteSite($id){
 		global $wpdb;		
 
 		if(is_array($id))
@@ -165,8 +174,15 @@ class GeneratorEvents {
 		$query = "DELETE FROM $this->table_sites WHERE id IN $id";
 		return $wpdb->query($query);
 	}
-	
 
+	public function getSite($id){
+
+		$query = "SELECT * FROM $this->table_sites where 1";
+		if (!empty($id)) {
+			$query.=" and id='$id'";
+		}
+		return $this->db->get_results( $query, ARRAY_A );
+	}	
 
 	public function addSite(){
 		global $wpdb;
@@ -185,7 +201,7 @@ class GeneratorEvents {
 		}
 		return false;		
 	}
-	public function aditSite($id=null){
+	public function editSite($id=null){
 		global $wpdb;
 		$wpdb->flush();
 		$id = !is_null($id) ? $id : $_POST['id_site'];
@@ -209,7 +225,6 @@ class GeneratorEvents {
 			environment = '$environment',
 			closed_hour = '$closed_hour',
 			opening_hour = '$opening_hour' WHERE ID = {$id}";
-
 			return $wpdb->query($sql);
 		}
 		return false;

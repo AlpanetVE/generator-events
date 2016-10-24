@@ -36,20 +36,22 @@ Copyright 2012-2016 Alpanet
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   ================================================================================ */
 
-require_once("define.php");
+
 
 if (is_admin() == true) {
-
+	require_once("define.php");
+	require_once ALPAGE_ABSPATH . 'classes/class-generator-events.php';
 	register_activation_hook( __FILE__, array( 'GeneratorEvents', 'plugin_activation' ) );
 	register_deactivation_hook( __FILE__, array( 'GeneratorEvents', 'plugin_deactivation' ) );
-
-	// Start up Generator Events on WordPress's "init" action hook.	
-	require_once ALPAGE_ABSPATH . 'classes/class-generator-events.php';
-
-	// Start up TablePress on WordPress's "init" action hook.
 	add_action( 'init', array( 'GeneratorEvents', 'run' ) );
+	add_action( 'admin_init', 'plugin_admin_init' );
+}
 
-	//add_action( 'admin_menu', array( 'GeneratorEvents_Controller', 'alpage_menu' ) );
+
+function plugin_admin_init() {
+    wp_enqueue_script('datetimepicker',ALPAGE_URL.'views/backend/js/jquery.datetimepicker.full.min.js');
+	wp_register_style( 'datetimepicker', ALPAGE_URL.'views/backend/css/datetimepicker.css' );
+	wp_register_style( 'alpage_admin_style', ALPAGE_URL.'views/backend/css/style.css' );
 }
 
 /**
@@ -69,14 +71,12 @@ function alpage_get_menu( ) {
         case 'GeneratorSites':	
         	include('views/backend/view-generatorsites.php');
             $ObjList = new GeneratorSiteList();
-            $ObjList ->do_action($action);
-
+            $ObjList ->doAction($action);
             break;
         case 'GeneratorEvents': 
-            include('views/backend/view-generatorsites.php');
-            $ObjList = new GeneratorSiteList();
-            $ObjList ->do_action($action);
-            
+            include('views/backend/view-generatorevents.php');
+            $ObjList = new GeneratorEventList();
+            $ObjList ->doAction($action);
             break;
     }
 }

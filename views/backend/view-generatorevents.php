@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || die( 'No direct script access allowed!' );
  * @author Tobias Bäthge
  * @since 1.0.0
  */
-class GeneratorSiteList extends WP_List_Table {
+class GeneratorEventList extends WP_List_Table {
 
 	private $db;
 
@@ -31,8 +31,8 @@ class GeneratorSiteList extends WP_List_Table {
     	global $status, $page;
 
 		parent::__construct( array(
-			'singular'  => 'id_site',
-			'plural'    => 'sites',
+			'singular'  => 'id_event',
+			'plural'    => 'events',
 			'ajax'      => false,
 			'screen'    => $_REQUEST['page']
 		) );
@@ -46,9 +46,9 @@ class GeneratorSiteList extends WP_List_Table {
 		$columns = array(
 			'cb'	=> '<input type="checkbox" />',
 			'id'	=> __('ID', 'wptg-plugin'),
+			'name_site'	=> __('Site', 'wptg-plugin'),
 			'name'	=> __('Name', 'wptg-plugin'),
-			'latitude'	=> __('Latitude', 'wptg-plugin'),
-			'longitude'	=> __('Longitude', 'wptg-plugin')
+			'date'	=> __('Date', 'wptg-plugin')
 		);
 		return $columns;
 	}
@@ -60,7 +60,7 @@ class GeneratorSiteList extends WP_List_Table {
 	function column_name($item){
 		//Build row actions
 		$actions = array(
-			'edit' => sprintf('<a href="?page=%s&action=%s&id_site=%s">%s</a>', $_REQUEST['page'],'edit',$item['id'], __('Edit', 'wptg-plugin') )
+			'edit' => sprintf('<a href="?page=%s&action=%s&id_event=%s">%s</a>', $_REQUEST['page'],'edit',$item['id'], __('Edit', 'wptg-plugin') )
 		);
 
 		//Return the title contents
@@ -92,8 +92,8 @@ class GeneratorSiteList extends WP_List_Table {
 		$sortable               = array();
 		$curr_page              = $this->get_pagenum();
 
-		$total_items            = $this->db->getCountSites();
-		$data                   = $this->db->get_page_itemsSites($curr_page, $per_page);
+		$total_items            = $this->db->getCountEvents();
+		$data                   = $this->db->get_page_itemsEvent($curr_page, $per_page);
 
 		$this->items            = $data;
 		$this->_column_headers  = array($columns, $hidden, $sortable);
@@ -205,7 +205,7 @@ class GeneratorSiteList extends WP_List_Table {
 	}
 
 	function delete(){
-		return $this->db->deleteSite($_GET['id_site']);
+		return $this->db->deleteSite($_GET['id_event']);
 	}
 
 	function processData(){
@@ -234,7 +234,7 @@ class GeneratorSiteList extends WP_List_Table {
  				$this->showForm();
  			break;
  			case 'edit':
- 				$id=$_GET['id_site'];
+ 				$id=$_GET['id_event'];
  				$this->showForm($id);
  			break;
  			case 'delete':

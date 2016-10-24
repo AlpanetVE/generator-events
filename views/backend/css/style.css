@@ -1,0 +1,22 @@
+/**
+ * CSS code for all TablePress admin screens
+ *
+ * @package Generator Event
+ * @subpackage Views CSS
+ * @author Alpanet
+ * @since 1.0.0
+ */
+
+/*  */
+.form-field.form-field-small {
+    float: left;
+    margin-right: 15px;
+    width: auto;
+}
+.form-field.field-coord {
+    float: left;
+    width: 39%;
+}
+.form-field {
+    width: 80%;
+}

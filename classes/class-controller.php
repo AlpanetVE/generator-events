@@ -62,7 +62,6 @@ class GeneratorEvents_Controller {
 				break;
 		}
 		
-		 
         $perms = 'export';
         $perms = apply_filters($wpfront_caps_translator, $perms);
         $main_menu = add_menu_page('Generator Events Plugin', 'GeneratorEvents', $perms, 'GeneratorSites', 'alpage_get_menu', $icon_svg,$position);

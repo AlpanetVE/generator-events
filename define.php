@@ -7,6 +7,10 @@ if (function_exists('plugin_dir_url'))
 
 	// Define certain plugin variables as constants.
 	define( 'ALPAGE_ABSPATH', plugin_dir_path( __FILE__ ) );
+	define( 'ALPAGE_URL', get_site_url(). '/wp-content/plugins/generator-events/' );
 	define( 'ALPAGE_MINIMUM_WP_VERSION', '3.7' );
+
+
+
 
 }
