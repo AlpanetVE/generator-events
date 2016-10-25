@@ -48,7 +48,8 @@ class GeneratorSiteList extends WP_List_Table {
 			'id'	=> __('ID', 'wptg-plugin'),
 			'name'	=> __('Name', 'wptg-plugin'),
 			'latitude'	=> __('Latitude', 'wptg-plugin'),
-			'longitude'	=> __('Longitude', 'wptg-plugin')
+			'longitude'	=> __('Longitude', 'wptg-plugin'),
+			'AddEvent'	=> __('Add Event', 'wptg-plugin')
 		);
 		return $columns;
 	}
@@ -67,6 +68,17 @@ class GeneratorSiteList extends WP_List_Table {
 		return sprintf('%1$s %2$s',
 			/*$1%s*/ stripslashes($item['name']),
 			/*$2%s*/ $this->row_actions($actions)
+		);
+	}
+	function column_AddEvent($item){
+		//Build row actions
+		$actions = array(
+			'edit' => sprintf('<a href="?page=%s&action=%s&id_site=%s">%s</a>', 'GeneratorEvents','add',$item['id'], __('Do it', 'wptg-plugin') )
+		);
+
+		//Return the title contents
+		return sprintf('%1$s',
+			/*$1%s*/ $this->row_actions($actions)
 		);
 	}
 

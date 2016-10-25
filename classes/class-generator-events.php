@@ -1,4 +1,4 @@
-<?php
+0<?php
 
 defined( 'ABSPATH' ) || die( 'No direct script access allowed!' );
 
@@ -113,13 +113,13 @@ class GeneratorEvents {
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_site_event}` (
 			`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			`id_site_fun` int(11) UNSIGNED NOT NULL,
-			`name` varchar(255) NOT NULL,
-			`opening_hour` time DEFAULT NULL,
-			`closed_hour` time DEFAULT NULL,
-			`poster` varchar(100) DEFAULT NULL,
-			`date` date NOT NULL,
+			`name` varchar(255) NOT NULL,			
+			`poster` varchar(100) DEFAULT NULL,			
 			`clothing_type` varchar(100) DEFAULT NULL,
 			`ticket_selling` longtext,
+			`opening_hour` time DEFAULT NULL,
+			`closed_hour` time DEFAULT NULL,
+			`date` date NOT NULL,
 			`description` varchar(255) DEFAULT NULL)";
 
          
@@ -141,7 +141,7 @@ class GeneratorEvents {
 		static $instance = null;
 		if($instance == null){
 			$instance = new GeneratorEvents();
-		}
+		}https://developer.wordpress.org/reference/functions/wp_enqueue_script/
 		return $instance;
 	}
 	public function get_page_itemsSites($curr_page, $per_page){

@@ -107,7 +107,7 @@ class GeneratorEventList extends WP_List_Table {
 
 	function show(){
 		echo sprintf('<div class="wrap">');
-    	echo sprintf( '<h2>%s <a class="add-new-h2" href="%s">%s</a></h2>', __('Events', 'wptg-plugin'), admin_url('admin.php?page=GeneratorSites&action=add'), __('Add New', 'wptg-plugin') );
+    	echo sprintf( '<h2>%s <a class="add-new-h2" href="%s">%s</a></h2>', __('Events', 'wptg-plugin'), admin_url('admin.php?page=GeneratorEvents&action=add'), __('Add New', 'wptg-plugin') );
         echo sprintf('<form method="GET"><input type="hidden" name="page" value="'.$_GET['page'].'">');
 	    $this->prepare_items();
 		$this->display();
@@ -153,7 +153,8 @@ class GeneratorEventList extends WP_List_Table {
 		</script>
 		<div class="wrap">
 		<h1>Add Site Event</h1>
-			<form method="post" action="?page=GeneratorSites&action=list" >
+		<a onclick="return false;" title="Upload image" class="thickbox" id="add_image" href="media-upload.php?type=image&amp;TB_iframe=true&amp;width=640&amp;height=105">Upload Image</a>
+			<form method="post" action="?page=GeneratorEvents&action=list" >
 				<input type="hidden" name="id_site" value="<?php echo $id; ?>" >
 				<input type="hidden" name="savedata" value="<?php echo $savedata; ?>" >
 				<div class="postbox ">
