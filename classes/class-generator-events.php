@@ -114,18 +114,20 @@ class GeneratorEvents {
 			`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			`id_site_fun` int(11) UNSIGNED NOT NULL,
 			`name` varchar(255) NOT NULL,			
-			`poster` varchar(100) DEFAULT NULL,			
+			`poster` varchar(100) DEFAULT NULL,
+			`date` date NOT NULL,
 			`clothing_type` varchar(100) DEFAULT NULL,
 			`ticket_selling` longtext,
+			`description` varchar(255) DEFAULT NULL,
 			`opening_hour` time DEFAULT NULL,
-			`closed_hour` time DEFAULT NULL,
-			`date` date NOT NULL,
-			`description` varchar(255) DEFAULT NULL)";
+			`closed_hour` time DEFAULT NULL)";
 
          
         foreach($sql as $sk => $sv){
 			$wpdb->query($sv);
 		}
+
+		mkdir(ALPAGE_PATH_UPLOADS, 0700);
 
     }
 
