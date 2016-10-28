@@ -141,7 +141,6 @@ class GeneratorEventList extends WP_List_Table {
 			$siteid	=isset($_GET['id_site'])?$_GET['id_site']:'';
 		}
 
-
 		
 		$name			=isset($data[0]['name'])?$data[0]['name']:'';
 		$date			=isset($data[0]['date'])?$data[0]['date']:'';
