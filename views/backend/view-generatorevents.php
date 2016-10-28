@@ -27,7 +27,7 @@ class GeneratorEventList extends WP_List_Table {
     	$this->load_dependencies();
 
     	$this->db = GeneratorEvents::get_instance();
-    	
+
     	global $status, $page;
 
 		parent::__construct( array(
@@ -45,7 +45,7 @@ class GeneratorEventList extends WP_List_Table {
 	function get_columns(){
 		$columns = array(
 			'cb'	=> '<input type="checkbox" />',
-			'id'	=> __('ID', 'wptg-plugin'),			
+			'id'	=> __('ID', 'wptg-plugin'),
 			'name'	=> __('Name', 'wptg-plugin'),
 			'name_site'	=> __('Site', 'wptg-plugin'),
 			'date'	=> __('Date', 'wptg-plugin')
@@ -115,9 +115,9 @@ class GeneratorEventList extends WP_List_Table {
     	echo sprintf('</div>');
 	}
 
-	
+
 	function showForm($id=null){
-		wp_enqueue_style('alpage_admin_style');		 
+		wp_enqueue_style('alpage_admin_style');
 		wp_enqueue_style('datetimepicker');
 		wp_enqueue_style('alpage_filecomponent');
 		wp_enqueue_script('alpage_filecomponent',ALPAGE_URL.'views/backend/js/custom-file-input.js');
@@ -141,7 +141,7 @@ class GeneratorEventList extends WP_List_Table {
 			$siteid	=isset($_GET['id_site'])?$_GET['id_site']:'';
 		}
 
-		
+
 		$name			=isset($data[0]['name'])?$data[0]['name']:'';
 		$date			=isset($data[0]['date'])?$data[0]['date']:'';
 		$description	=isset($data[0]['description'])?$data[0]['description']:'';
@@ -151,7 +151,7 @@ class GeneratorEventList extends WP_List_Table {
 		$closed_hour	=isset($data[0]['closed_hour'])?$data[0]['closed_hour']:'';
 
 		?>
-		
+
 		<script>
 		jQuery(document).ready(function($){
 		   jQuery('#table-opening_hour,#table-closed_hour').datetimepicker({
@@ -181,7 +181,7 @@ class GeneratorEventList extends WP_List_Table {
 							<?php
 								foreach ($Sites as $key => $site) {
 									echo '<option value="'.$site['id'].'"';
-									if($site['id']==$siteid) 
+									if($site['id']==$siteid)
 										echo ' selected="selected"';
 									echo '"> '.$site['name'].'</option>';
 								}
@@ -202,7 +202,7 @@ class GeneratorEventList extends WP_List_Table {
 
 						<div class="box">
 						<input accept="image/*"  name="poster" id="table-poster" type="file" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" />
-						<label for="table-poster"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> 
+						<label for="table-poster"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>
 						<span><?php _e( $msjPoster, 'GeneratorEvents' ); ?>&hellip;</span>
 						</label>
 					</div>
@@ -224,7 +224,7 @@ class GeneratorEventList extends WP_List_Table {
 					</div>
 
 					<div class="form-field">
-						<label for="table-clothing_type"><?php _e( 'Clothi Type', 'GeneratorEvents' ); ?>:</label>
+						<label for="table-clothing_type"><?php _e( 'Clothing Type', 'GeneratorEvents' ); ?>:</label>
 						<input type="text" name="GeForm[clothing_type]" value="<?php echo $clothing_type; ?>" id="table-clothing_type" />
 					</div>
 
@@ -232,17 +232,17 @@ class GeneratorEventList extends WP_List_Table {
 						<label for="table-ticket_selling"><?php _e( 'Ticket Selling', 'GeneratorEvents' ); ?>:</label>
 						<input type="text" name="GeForm[ticket_selling]" value="<?php echo $ticket_selling; ?>" id="table-ticket_selling" />
 					</div>
-					
+
 
 					<div class="form-field form-field-small">
 						<label for="table-opening_hour"><?php _e( 'Opening hour', 'GeneratorEvents' ); ?>:</label>
 						<input type="time" name="GeForm[opening_hour]" value="<?php echo $opening_hour; ?>" id="table-opening_hour" title="<?php esc_attr_e( 'Opening hour', 'GeneratorEvents' ); ?>"/>
-						<p><?php _e( 'Time to open the site.', 'GeneratorEvents' ); ?></p>
+						<p><?php _e( 'Time to begin the event.', 'GeneratorEvents' ); ?></p>
 					</div>
 					<div class="form-field form-field-small">
 						<label for="table-closed_hour"><?php _e( 'Closed hour', 'GeneratorEvents' ); ?>:</label>
 						<input type="time" name="GeForm[closed_hour]" value="<?php echo $closed_hour; ?>" id="table-closed_hour" title="<?php esc_attr_e( 'CLosed hour.', 'GeneratorEvents' ); ?>" />
-						<p><?php _e( 'Time to close the site.', 'GeneratorEvents' ); ?></p>
+						<p><?php _e( 'Time to finish the event.', 'GeneratorEvents' ); ?></p>
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -268,7 +268,7 @@ class GeneratorEventList extends WP_List_Table {
 	 			break;
 	 			case 'update':
 	 				return $this->db->editEvent();
-	 			break; 			
+	 			break;
 	 		}
 		}
 		return false;

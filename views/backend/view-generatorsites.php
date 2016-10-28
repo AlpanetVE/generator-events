@@ -27,7 +27,7 @@ class GeneratorSiteList extends WP_List_Table {
     	$this->load_dependencies();
 
     	$this->db = GeneratorEvents::get_instance();
-    	
+
     	global $status, $page;
 
 		parent::__construct( array(
@@ -127,9 +127,9 @@ class GeneratorSiteList extends WP_List_Table {
     	echo sprintf('</div>');
 	}
 
-	
+
 	function showForm($id=null){
-		wp_enqueue_style('alpage_admin_style');		 
+		wp_enqueue_style('alpage_admin_style');
 		wp_enqueue_style('datetimepicker');
 
 		if (!empty($id)) {
@@ -140,16 +140,16 @@ class GeneratorSiteList extends WP_List_Table {
 			$savedata = "insert";
 		}
 
-		$name 			= isset($data[0]['name'])?$data[0]['name']:''; 
-		$addres 		= isset($data[0]['addres'])?$data[0]['addres']:''; 
-		$latitude 		= isset($data[0]['latitude'])?$data[0]['latitude']:''; 
-		$longitude 		= isset($data[0]['longitude'])?$data[0]['longitude']:''; 
-		$environment	= isset($data[0]['environment'])?$data[0]['environment']:''; 
-		$opening_hour	= isset($data[0]['opening_hour'])?$data[0]['opening_hour']:''; 
+		$name 			= isset($data[0]['name'])?$data[0]['name']:'';
+		$addres 		= isset($data[0]['addres'])?$data[0]['addres']:'';
+		$latitude 		= isset($data[0]['latitude'])?$data[0]['latitude']:'';
+		$longitude 		= isset($data[0]['longitude'])?$data[0]['longitude']:'';
+		$environment	= isset($data[0]['environment'])?$data[0]['environment']:'';
+		$opening_hour	= isset($data[0]['opening_hour'])?$data[0]['opening_hour']:'';
 		$closed_hour 	= isset($data[0]['closed_hour'])?$data[0]['closed_hour']:'';
 
 		?>
-		
+
 		<script>
 		jQuery(document).ready(function($) {
 		   jQuery('#table-opening_hour,#table-closed_hour').datetimepicker({
@@ -177,7 +177,7 @@ class GeneratorSiteList extends WP_List_Table {
 					<div class="form-field">
 						<label for="site-addres"><?php _e( 'Addres', 'GeneratorEvents' ); ?>:</label>
 						<textarea name="GeForm[addres]" id="site-addres" rows="2"><?php echo $addres; ?></textarea>
-						<p><?php _e( 'Enter the address of the site.', 'GeneratorEvents' ); ?></p>
+						<p><?php _e( 'Enter site address.', 'GeneratorEvents' ); ?></p>
 					</div>
 
 
@@ -193,7 +193,7 @@ class GeneratorSiteList extends WP_List_Table {
 					<div class="form-field">
 						<label for="table-environment"><?php _e( 'Environment', 'GeneratorEvents' ); ?>:</label>
 						<input type="text" name="GeForm[environment]" value="<?php echo $environment; ?>" id="table-environment" />
-						<p><?php _e( 'Enter the type of environment in this', 'GeneratorEvents' ); ?></p>
+						<p><?php _e( 'Enter the type of environment', 'GeneratorEvents' ); ?></p>
 					</div>
 
 					<div class="form-field form-field-small">
@@ -230,7 +230,7 @@ class GeneratorSiteList extends WP_List_Table {
 	 			break;
 	 			case 'update':
 	 				return $this->db->editSite();
-	 			break; 			
+	 			break;
 	 		}
 		}
 		return false;
