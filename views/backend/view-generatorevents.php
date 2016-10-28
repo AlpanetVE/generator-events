@@ -93,7 +93,7 @@ class GeneratorEventList extends WP_List_Table {
 		$curr_page              = $this->get_pagenum();
 
 		$total_items            = $this->db->getCountEvents();
-		$data                   = $this->db->get_page_itemsEvent($curr_page, $per_page);
+		$data                   = $this->db->get_itemsEvent($curr_page, $per_page);
 
 		$this->items            = $data;
 		$this->_column_headers  = array($columns, $hidden, $sortable);
@@ -119,43 +119,57 @@ class GeneratorEventList extends WP_List_Table {
 	function showForm($id=null){
 		wp_enqueue_style('alpage_admin_style');		 
 		wp_enqueue_style('datetimepicker');
-
+		wp_enqueue_style('alpage_filecomponent');
+		wp_enqueue_script('alpage_filecomponent',ALPAGE_URL.'views/backend/js/custom-file-input.js');
 		$Sites=$this->db->getSite();
 
 		if (!empty($id)) {
-			$data=$this->db->getEvent($id);
-			$savedata = "update";
+			$data=$this->db->get_itemsEvent(1,1,$id);
+			$savedata = 'update';
+
+			if (empty($data[0]['poster']))
+				$msjPoster = 'Choose a file';
+			else
+				$msjPoster = 'Update image';
+
+			$siteid	=isset($data[0]['siteid'])?$data[0]['siteid']:'';
 		}else {
 			$data=array();
-			$savedata = "insert";
+			$savedata = 'insert';
+			$msjPoster = 'Choose a file';
+
+			$siteid	=isset($_GET['id_site'])?$_GET['id_site']:'';
 		}
 
-		$name 			= isset($data[0]['name'])?$data[0]['name']:''; 
-		$addres 		= isset($data[0]['addres'])?$data[0]['addres']:''; 
-		$latitude 		= isset($data[0]['latitude'])?$data[0]['latitude']:''; 
-		$longitude 		= isset($data[0]['longitude'])?$data[0]['longitude']:''; 
-		$environment	= isset($data[0]['environment'])?$data[0]['environment']:''; 
-		$opening_hour	= isset($data[0]['opening_hour'])?$data[0]['opening_hour']:''; 
-		$closed_hour 	= isset($data[0]['closed_hour'])?$data[0]['closed_hour']:'';
+
+		
+		$name			=isset($data[0]['name'])?$data[0]['name']:'';
+		$date			=isset($data[0]['date'])?$data[0]['date']:'';
+		$description	=isset($data[0]['description'])?$data[0]['description']:'';
+		$clothing_type	=isset($data[0]['clothing_type'])?$data[0]['clothing_type']:'';
+		$ticket_selling	=isset($data[0]['ticket_selling'])?$data[0]['ticket_selling']:'';
+		$opening_hour	=isset($data[0]['opening_hour'])?$data[0]['opening_hour']:'';
+		$closed_hour	=isset($data[0]['closed_hour'])?$data[0]['closed_hour']:'';
 
 		?>
 		
 		<script>
-		jQuery(document).ready(function($) {
+		jQuery(document).ready(function($){
 		   jQuery('#table-opening_hour,#table-closed_hour').datetimepicker({
 			  datepicker:false,
 			  format:'H:i'
 			});
-		   /*jQuery('#table-closed_hour').datetimepicker({
-			  datepicker:false,
-			  format:'H:i',
-			  value:'03:00'
-			});*/
+			jQuery('#table-date').datetimepicker({
+		      timepicker: false,
+		      format:'Y-m-d',
+			  formatDate:'Y-m-d',
+			  minDate:'-1970/01/02' // yesterday is minimum date
+		    });
 		});
 		</script>
+		<script>(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
 		<div class="wrap">
 		<h1>Add Site Event</h1>
-		<a onclick="return false;" title="Upload image" class="thickbox" id="add_image" href="media-upload.php?type=image&amp;TB_iframe=true&amp;width=640&amp;height=105">Upload Image</a>
 			<form method="post" enctype="multipart/form-data" action="?page=GeneratorEvents&action=list" >
 				<input type="hidden" name="id_site" value="<?php echo $id; ?>" >
 				<input type="hidden" name="savedata" value="<?php echo $savedata; ?>" >
@@ -167,7 +181,10 @@ class GeneratorEventList extends WP_List_Table {
 							<option value=""> Select Site Here </option>
 							<?php
 								foreach ($Sites as $key => $site) {
-									echo '<option value="'.$site['id'].'"> '.$site['name'].'</option>';
+									echo '<option value="'.$site['id'].'"';
+									if($site['id']==$siteid) 
+										echo ' selected="selected"';
+									echo '"> '.$site['name'].'</option>';
 								}
 							?>
 						</select>
@@ -177,17 +194,28 @@ class GeneratorEventList extends WP_List_Table {
 						<input required type="text" name="GeForm[name]" value="<?php echo $name; ?>" id="table-name" class="placeholder placeholder-active"  placeholder="<?php esc_attr_e( 'Enter Event Name here', 'GeneratorEvents' ); ?>" />
 					</div>
 
+
+
+
 					<div class="form-field">
 						<label for="table-latitude"><?php _e( 'Upload Poster', 'GeneratorEvents' ); ?> <span style="color: red;font-size: 11px;"><?php _e( '(300px with 200px height)', 'GeneratorEvents' ); ?></span>  :</label>
-						<input  accept="image/*"  name="poster" id="table-poster" type="file"/>
+
+
+						<div class="box">
+						<input accept="image/*"  name="poster" id="table-poster" type="file" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" />
+						<label for="table-poster"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> 
+						<span><?php _e( $msjPoster, 'GeneratorEvents' ); ?>&hellip;</span>
+						</label>
 					</div>
+
+
+					</div>
+
 
 					<div class="form-field">
 						<label for="table-date"><?php _e( 'Date', 'GeneratorEvents' ); ?>:</label>
 						<input type="text" name="GeForm[date]" value="<?php echo $date; ?>" id="table-date" />
 					</div>
-
-
 
 
 					<div class="form-field">

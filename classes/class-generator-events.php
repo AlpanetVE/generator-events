@@ -152,7 +152,7 @@ class GeneratorEvents {
 		return $this->db->get_results( $query, ARRAY_A );
 	}
 	
-	public function get_page_itemsEvent($curr_page, $per_page){
+	public function get_itemsEvent($curr_page, $per_page, $idEvent=null){
 		$start = (($curr_page-1)*$per_page);
 		$query = "SELECT
 					se.id,
@@ -165,10 +165,18 @@ class GeneratorEvents {
 					se.clothing_type,
 					se.ticket_selling,
 					se.description,
-					sf.name as name_site
+					sf.name as name_site,
+					sf.id as siteid
 					FROM
 					$this->table_events AS se
-					Inner Join $this->table_sites AS sf ON sf.id = se.id_site_fun ORDER BY id DESC LIMIT $start, $per_page";
+					Inner Join $this->table_sites AS sf ON sf.id = se.id_site_fun where 1";
+
+					if (!empty($idEvent)) {
+						$query.=" and se.id='$idEvent'";
+					}
+
+					$query.="  ORDER BY se.id DESC LIMIT $start, $per_page";
+
 		return $this->db->get_results( $query, ARRAY_A );
 	}
 	public function getCountSites(){
@@ -210,7 +218,7 @@ class GeneratorEvents {
 			$query.=" and id='$id'";
 		}
 		return $this->db->get_results( $query, ARRAY_A );
-	}	
+	}
 
 	public function addSite(){
 		global $wpdb;
@@ -245,7 +253,6 @@ class GeneratorEvents {
 				'opening_hour' 	=>	isset($data['opening_hour']) ? $data['opening_hour'] : '',
 				'closed_hour'	=>	isset($data['closed_hour']) ? $data['closed_hour'] : ''				
 			));
-			var_dump($results);
 			return $results;
 		}
 		return false;		
@@ -263,9 +270,8 @@ class GeneratorEvents {
 
 		$target_path 	= ALPAGE_PATH_UPLOADS;
 		$nameFile 		= $this->sanear_string(basename( date("d-m-Y H:i:s").$_FILES['poster']['name']));
-		$target_path = $target_path .'/'. $nameFile;
+		$target_path = $target_path . $nameFile;
 
-		var_dump($target_path);
 		if(!move_uploaded_file($_FILES['poster']['tmp_name'], $target_path)) {
 			$nameFile='';
 		} 		
@@ -335,6 +341,7 @@ class GeneratorEvents {
 		$wpdb->flush();
 		$id = !is_null($id) ? $id : $_POST['id_site'];
 
+		$posterNameFile 	= $this->uploadFile();
 		if (!empty($id)) {
 			$data=$_POST['GeForm'];
 			
@@ -354,6 +361,7 @@ class GeneratorEvents {
 			environment = '$environment',
 			closed_hour = '$closed_hour',
 			opening_hour = '$opening_hour' WHERE ID = {$id}";
+
 			return $wpdb->query($sql);
 		}
 		return false;
@@ -366,10 +374,10 @@ class GeneratorEvents {
 
 		if (!empty($id)) {
 			$data=$_POST['GeForm'];
-			
+			$posterNameFile = $this->uploadFile();
 			$id_site_fun 	= isset($data['siteid']) ? $data['siteid'] : '';
 			$name 			= isset($data['name']) ? $data['name'] : '';
-			$poster 		= isset($data['poster']) ? $data['poster'] : '';
+			$poster 		= isset($posterNameFile) ? $posterNameFile : '';
 			$date 			= isset($data['date']) ? $data['date'] : '';
 			$clothing_type 	= isset($data['clothing_type']) ? $data['clothing_type'] : '';
 			$ticket_selling = isset($data['ticket_selling']) ? $data['ticket_selling'] : '';
@@ -387,7 +395,13 @@ class GeneratorEvents {
 			ticket_selling 	= '$ticket_selling',
 			description 	= '$description',
 			closed_hour 	= '$closed_hour',
-			opening_hour 	= '$opening_hour' WHERE ID = {$id}";
+			opening_hour 	= '$opening_hour' ";
+
+			if (!empty($poster)) {
+				$sql.=" ,poster = '$poster'";
+			}
+
+			$sql.="  WHERE ID = {$id}";
 			return $wpdb->query($sql);
 		}
 		return false;

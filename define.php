@@ -9,8 +9,8 @@ if (function_exists('plugin_dir_url'))
 	define( 'ALPAGE_ABSPATH', plugin_dir_path( __FILE__ ) );
 	define( 'ALPAGE_URL', get_site_url(). '/wp-content/plugins/generator-events/' );
 
-	define( 'ALPAGE_URL_UPLOADS', get_site_url(). '/wp-content/uploads/'.ALPAGE_BASENAME );
-	define( 'ALPAGE_PATH_UPLOADS',ABSPATH . 'wp-content/uploads/'.ALPAGE_BASENAME );
+	define( 'ALPAGE_URL_UPLOADS', get_site_url(). '/wp-content/uploads/'.ALPAGE_BASENAME.'/' );
+	define( 'ALPAGE_PATH_UPLOADS',ABSPATH . 'wp-content/uploads/'.ALPAGE_BASENAME.'/' );
 	
 	define( 'ALPAGE_MINIMUM_WP_VERSION', '3.7' );
 

@@ -50,6 +50,7 @@ function plugin_admin_init() {
     wp_enqueue_script('datetimepicker',ALPAGE_URL.'views/backend/js/jquery.datetimepicker.full.min.js');
 	wp_register_style( 'datetimepicker', ALPAGE_URL.'views/backend/css/datetimepicker.css' );
 	wp_register_style( 'alpage_admin_style', ALPAGE_URL.'views/backend/css/style.css' );
+	wp_register_style( 'alpage_filecomponent', ALPAGE_URL.'views/backend/css/component.css' );
 }
 
 /**
