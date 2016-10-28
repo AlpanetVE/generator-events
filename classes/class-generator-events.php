@@ -264,7 +264,7 @@ class GeneratorEvents {
 	 */
 	public function uploadFile(){
 
-		if (!isset($_FILES['poster']['name']) || empty($_FILES['poster']['name'] || $_FILES[uploadedfile][size]>20000000)) {
+		if (!isset($_FILES['poster']['name']) || empty($_FILES['poster']['name']) || ($_FILES[uploadedfile][size] >20000000)) {
 			return '';
 		}
 
@@ -408,7 +408,7 @@ class GeneratorEvents {
 	}
 
 	public static function run() {
-		self::$controller = self::load_controller( $controller );
+		self::$controller =self::load_controller();
 	}
 	/**
 	 * Load a file with require_once(), after running it through a filter.
