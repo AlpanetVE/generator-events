@@ -1,4 +1,4 @@
-0<?php
+<?php
 
 defined( 'ABSPATH' ) || die( 'No direct script access allowed!' );
 
@@ -191,8 +191,19 @@ class GeneratorEvents {
 		$query = "DELETE FROM $this->table_sites WHERE id IN $id";
 		return $wpdb->query($query);
 	}
+	public function deleteEvent($id){
+		global $wpdb;		
 
-	public function getSite($id){
+		if(is_array($id))
+			$id = sprintf('(%s)', implode(',', $id));
+		else {
+			$id = sprintf('(%d)', $id);
+		}
+        
+		$query = "DELETE FROM $this->table_events WHERE id IN $id";
+		return $wpdb->query($query);
+	}
+	public function getSite($id=''){
 
 		$query = "SELECT * FROM $this->table_sites where 1";
 		if (!empty($id)) {
@@ -218,6 +229,107 @@ class GeneratorEvents {
 		}
 		return false;		
 	}
+	public function addEvent(){
+		global $wpdb;
+		$data=$_POST['GeForm'];
+		if(is_array($data)){
+			$posterNameFile 	= $this->uploadFile();
+			$results = $wpdb->insert($this->table_events, array(
+				'id_site_fun'   =>  isset($data['siteid']) ? $data['siteid'] : '',
+				'name'	  		=>	isset($data['name']) ? $data['name'] : '',
+				'poster'  		=>	isset($posterNameFile) ? $posterNameFile : '',
+				'date'  		=>	isset($data['date']) ? $data['date'] : '',
+				'clothing_type' =>	isset($data['clothing_type']) ? $data['clothing_type'] : '',
+				'ticket_selling'=>	isset($data['ticket_selling']) ? $data['ticket_selling'] : '',
+				'description'	=>	isset($data['description']) ? $data['description'] : '',
+				'opening_hour' 	=>	isset($data['opening_hour']) ? $data['opening_hour'] : '',
+				'closed_hour'	=>	isset($data['closed_hour']) ? $data['closed_hour'] : ''				
+			));
+			var_dump($results);
+			return $results;
+		}
+		return false;		
+	}
+	/**
+	 * Upload file
+	 * Return array with [name] file saved
+	 * @public
+	 */
+	public function uploadFile(){
+
+		if (!isset($_FILES['poster']['name']) || empty($_FILES['poster']['name'] || $_FILES[uploadedfile][size]>20000000)) {
+			return '';
+		}
+
+		$target_path 	= ALPAGE_PATH_UPLOADS;
+		$nameFile 		= $this->sanear_string(basename( date("d-m-Y H:i:s").$_FILES['poster']['name']));
+		$target_path = $target_path .'/'. $nameFile;
+
+		var_dump($target_path);
+		if(!move_uploaded_file($_FILES['poster']['tmp_name'], $target_path)) {
+			$nameFile='';
+		} 		
+		return $nameFile;
+	}
+
+	function sanear_string($string)
+	{
+	 
+	    $string = trim($string);
+	 
+	    $string = str_replace(
+	        array('á', 'à', 'ä', 'â', 'ª', 'Á', 'À', 'Â', 'Ä'),
+	        array('a', 'a', 'a', 'a', 'a', 'A', 'A', 'A', 'A'),
+	        $string
+	    );
+	 
+	    $string = str_replace(
+	        array('é', 'è', 'ë', 'ê', 'É', 'È', 'Ê', 'Ë'),
+	        array('e', 'e', 'e', 'e', 'E', 'E', 'E', 'E'),
+	        $string
+	    );
+	 
+	    $string = str_replace(
+	        array('í', 'ì', 'ï', 'î', 'Í', 'Ì', 'Ï', 'Î'),
+	        array('i', 'i', 'i', 'i', 'I', 'I', 'I', 'I'),
+	        $string
+	    );
+	 
+	    $string = str_replace(
+	        array('ó', 'ò', 'ö', 'ô', 'Ó', 'Ò', 'Ö', 'Ô'),
+	        array('o', 'o', 'o', 'o', 'O', 'O', 'O', 'O'),
+	        $string
+	    );
+	 
+	    $string = str_replace(
+	        array('ú', 'ù', 'ü', 'û', 'Ú', 'Ù', 'Û', 'Ü'),
+	        array('u', 'u', 'u', 'u', 'U', 'U', 'U', 'U'),
+	        $string
+	    );
+	 
+	    $string = str_replace(
+	        array('ñ', 'Ñ', 'ç', 'Ç'),
+	        array('n', 'N', 'c', 'C',),
+	        $string
+	    );
+	 
+	    //Esta parte se encarga de eliminar cualquier caracter extraño
+	    $string = str_replace(
+	        array("\\", "¨", "º", "-", "~",
+	             "", "@", "|", "!", 
+	             "·", "$", "%", "&", "/",
+	             "(", ")", "?", "'", "¡",
+	             "¿", "[", "^", "<code>", "]",
+	             "+", "}", "{", "¨", "´",
+	             ">", "< ", ";", ",", ":",
+	             " "),
+	        '',
+	        $string
+	    );	 
+	 
+	    return $string;
+	}
+
 	public function editSite($id=null){
 		global $wpdb;
 		$wpdb->flush();
@@ -242,6 +354,40 @@ class GeneratorEvents {
 			environment = '$environment',
 			closed_hour = '$closed_hour',
 			opening_hour = '$opening_hour' WHERE ID = {$id}";
+			return $wpdb->query($sql);
+		}
+		return false;
+	}
+
+	public function editEvent($id=null){
+		global $wpdb;
+		$wpdb->flush();
+		$id = !is_null($id) ? $id : $_POST['id_site'];
+
+		if (!empty($id)) {
+			$data=$_POST['GeForm'];
+			
+			$id_site_fun 	= isset($data['siteid']) ? $data['siteid'] : '';
+			$name 			= isset($data['name']) ? $data['name'] : '';
+			$poster 		= isset($data['poster']) ? $data['poster'] : '';
+			$date 			= isset($data['date']) ? $data['date'] : '';
+			$clothing_type 	= isset($data['clothing_type']) ? $data['clothing_type'] : '';
+			$ticket_selling = isset($data['ticket_selling']) ? $data['ticket_selling'] : '';
+			$description 	= isset($data['description']) ? $data['description'] : '';
+			$opening_hour 	= isset($data['opening_hour']) ? $data['opening_hour'] : '';
+			$closed_hour 	= isset($data['closed_hour']) ? $data['closed_hour'] : '';
+			
+
+			$sql   = "UPDATE `$this->table_events` SET  
+			id_site_fun 	= '$id_site_fun',
+			name 			= '$name',
+			poster 			= '$poster',
+			`date` 			= '$date',
+			clothing_type 	= '$clothing_type',
+			ticket_selling 	= '$ticket_selling',
+			description 	= '$description',
+			closed_hour 	= '$closed_hour',
+			opening_hour 	= '$opening_hour' WHERE ID = {$id}";
 			return $wpdb->query($sql);
 		}
 		return false;

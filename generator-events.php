@@ -35,9 +35,7 @@ Copyright 2012-2016 Alpanet
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   ================================================================================ */
-
-
-
+ 
 if (is_admin() == true) {
 	require_once("define.php");
 	require_once ALPAGE_ABSPATH . 'classes/class-generator-events.php';

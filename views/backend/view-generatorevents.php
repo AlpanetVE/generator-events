@@ -120,8 +120,10 @@ class GeneratorEventList extends WP_List_Table {
 		wp_enqueue_style('alpage_admin_style');		 
 		wp_enqueue_style('datetimepicker');
 
+		$Sites=$this->db->getSite();
+
 		if (!empty($id)) {
-			$data=$this->db->getSite($id);
+			$data=$this->db->getEvent($id);
 			$savedata = "update";
 		}else {
 			$data=array();
@@ -154,36 +156,56 @@ class GeneratorEventList extends WP_List_Table {
 		<div class="wrap">
 		<h1>Add Site Event</h1>
 		<a onclick="return false;" title="Upload image" class="thickbox" id="add_image" href="media-upload.php?type=image&amp;TB_iframe=true&amp;width=640&amp;height=105">Upload Image</a>
-			<form method="post" action="?page=GeneratorEvents&action=list" >
+			<form method="post" enctype="multipart/form-data" action="?page=GeneratorEvents&action=list" >
 				<input type="hidden" name="id_site" value="<?php echo $id; ?>" >
 				<input type="hidden" name="savedata" value="<?php echo $savedata; ?>" >
 				<div class="postbox ">
 				<div class="form-wrap inside">
 					<div class="form-field">
-						<label for="table-name"><?php _e( 'Site Name', 'GeneratorEvents' ); ?>:</label>
-						<input required type="text" name="GeForm[name]" value="<?php echo $name; ?>" id="table-name" class="placeholder placeholder-active"  placeholder="<?php esc_attr_e( 'Enter Site Name here', 'GeneratorEvents' ); ?>" />
+						<label for="table-name"><?php _e( 'Site', 'GeneratorEvents' ); ?>:</label>
+						<select required name="GeForm[siteid]">
+							<option value=""> Select Site Here </option>
+							<?php
+								foreach ($Sites as $key => $site) {
+									echo '<option value="'.$site['id'].'"> '.$site['name'].'</option>';
+								}
+							?>
+						</select>
 					</div>
 					<div class="form-field">
-						<label for="site-addres"><?php _e( 'Addres', 'GeneratorEvents' ); ?>:</label>
-						<textarea name="GeForm[addres]" id="site-addres" rows="2"><?php echo $addres; ?></textarea>
-						<p><?php _e( 'Enter the address of the site.', 'GeneratorEvents' ); ?></p>
-					</div>
-
-
-					<div class="form-field field-coord">
-						<label for="table-latitude"><?php _e( 'Latitude', 'GeneratorEvents' ); ?>:</label>
-						<input required type="text" name="GeForm[latitude]" value="<?php echo $latitude; ?>" id="table-latitude" />
-					</div>
-					<div class="form-field field-coord">
-						<label for="table-longitude"><?php _e( 'Longitude', 'GeneratorEvents' ); ?>:</label>
-						<input required type="text" name="GeForm[longitude]" value="<?php echo $longitude; ?>" id="table-longitude" />
+						<label for="table-name"><?php _e( 'Event Name', 'GeneratorEvents' ); ?>:</label>
+						<input required type="text" name="GeForm[name]" value="<?php echo $name; ?>" id="table-name" class="placeholder placeholder-active"  placeholder="<?php esc_attr_e( 'Enter Event Name here', 'GeneratorEvents' ); ?>" />
 					</div>
 
 					<div class="form-field">
-						<label for="table-environment"><?php _e( 'Environment', 'GeneratorEvents' ); ?>:</label>
-						<input type="text" name="GeForm[environment]" value="<?php echo $environment; ?>" id="table-environment" />
-						<p><?php _e( 'Enter the type of environment in this', 'GeneratorEvents' ); ?></p>
+						<label for="table-latitude"><?php _e( 'Upload Poster', 'GeneratorEvents' ); ?> <span style="color: red;font-size: 11px;"><?php _e( '(300px with 200px height)', 'GeneratorEvents' ); ?></span>  :</label>
+						<input  accept="image/*"  name="poster" id="table-poster" type="file"/>
 					</div>
+
+					<div class="form-field">
+						<label for="table-date"><?php _e( 'Date', 'GeneratorEvents' ); ?>:</label>
+						<input type="text" name="GeForm[date]" value="<?php echo $date; ?>" id="table-date" />
+					</div>
+
+
+
+
+					<div class="form-field">
+						<label for="site-description"><?php _e( 'Description', 'GeneratorEvents' ); ?>:</label>
+						<textarea name="GeForm[description]" id="site-description" rows="2"><?php echo $description; ?></textarea>
+						<p><?php _e( 'Enter the description of the Event (Optional)', 'GeneratorEvents' ); ?></p>
+					</div>
+
+					<div class="form-field">
+						<label for="table-clothing_type"><?php _e( 'Clothi Type', 'GeneratorEvents' ); ?>:</label>
+						<input type="text" name="GeForm[clothing_type]" value="<?php echo $clothing_type; ?>" id="table-clothing_type" />
+					</div>
+
+					<div class="form-field">
+						<label for="table-ticket_selling"><?php _e( 'Ticket Selling', 'GeneratorEvents' ); ?>:</label>
+						<input type="text" name="GeForm[ticket_selling]" value="<?php echo $ticket_selling; ?>" id="table-ticket_selling" />
+					</div>
+					
 
 					<div class="form-field form-field-small">
 						<label for="table-opening_hour"><?php _e( 'Opening hour', 'GeneratorEvents' ); ?>:</label>
@@ -206,7 +228,7 @@ class GeneratorEventList extends WP_List_Table {
 	}
 
 	function delete(){
-		return $this->db->deleteSite($_GET['id_event']);
+		return $this->db->deleteEvent($_GET['id_event']);
 	}
 
 	function processData(){
@@ -215,10 +237,10 @@ class GeneratorEventList extends WP_List_Table {
 			$savedata=$_POST['savedata'];
 			switch ($savedata) {
 	 			case 'insert':
-	 				return $this->db->addSite();
+	 				return $this->db->addEvent();
 	 			break;
 	 			case 'update':
-	 				return $this->db->editSite();
+	 				return $this->db->editEvent();
 	 			break; 			
 	 		}
 		}
