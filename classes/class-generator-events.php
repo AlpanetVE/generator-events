@@ -127,7 +127,7 @@ class GeneratorEvents {
 			$wpdb->query($sv);
 		}
 
-		mkdir(ALPAGE_PATH_UPLOADS, 0700);
+		mkdir(ALPAGE_PATH_UPLOADS, 0777);
 
     }
 
