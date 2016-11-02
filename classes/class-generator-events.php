@@ -84,6 +84,8 @@ class GeneratorEvents {
 		$this->db = $wpdb;
 		$this->table_sites = $wpdb->prefix."alpage_site_fun";
 		$this->table_events = $wpdb->prefix."alpage_site_event";
+		$this->table_user_event_comment = $wpdb->prefix."alpage_user_event_comment";
+		$this->table_user_event = $wpdb->prefix."alpage_user_event";
 		$this->db_version = "1.0";
 	}
 
@@ -96,8 +98,10 @@ class GeneratorEvents {
 		$sql = array();
 		$objGeneratorEvents= new GeneratorEvents();
         //Only update database on version update
-        $table_site_fun 	= $objGeneratorEvents->table_sites;
-		$table_site_event 	= $objGeneratorEvents->table_events;
+        $table_site_fun 			= $objGeneratorEvents->table_sites;
+		$table_site_event 			= $objGeneratorEvents->table_events;
+		$table_user_event_comment 	= $objGeneratorEvents->table_user_event_comment;
+		$table_user_event 			= $objGeneratorEvents->table_user_event;
 
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_site_fun}` (
 			`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -122,7 +126,23 @@ class GeneratorEvents {
 			`opening_hour` time DEFAULT NULL,
 			`closed_hour` time DEFAULT NULL)";
 
-         
+		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_user_event_comment}` (
+			`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			`user_id` bigint(20) UNSIGNED NOT NULL,
+			`id_event` int(11) UNSIGNED NOT NULL,
+			`comment` varchar(255) NOT NULL,			
+			`img_link` varchar(100) DEFAULT NULL,
+			`video_link` date NOT NULL,			
+			`clothing_type` varchar(100) DEFAULT NULL)";
+
+		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_user_event}` (
+			`user_id` bigint(20) UNSIGNED NOT NULL,
+			`id_event` int(11) UNSIGNED NOT NULL,
+			`rating` int(1) UNSIGNED NOT NULL)";
+
+        $sql[] = "ALTER TABLE `{$table_user_event}`
+ 				ADD PRIMARY KEY (`user_id`,`id_event`)";
+
         foreach($sql as $sk => $sv){
 			$wpdb->query($sv);
 		}
