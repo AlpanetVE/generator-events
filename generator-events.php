@@ -36,16 +36,18 @@ Copyright 2012-2016 Alpanet
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   ================================================================================ */
 require_once("define.php");
+require ALPAGE_ABSPATH . 'classes/class-generator-events.php';
+require ALPAGE_ABSPATH . 'generator-events-shortcodes.php';
+
 /**BACK END**/
 if (is_admin() == true) {
-	require_once ALPAGE_ABSPATH . 'classes/class-generator-events.php';
+	
 	register_activation_hook( __FILE__, array( 'GeneratorEvents', 'plugin_activation' ) );
 	register_deactivation_hook( __FILE__, array( 'GeneratorEvents', 'plugin_deactivation' ) );
 	add_action( 'init', array( 'GeneratorEvents', 'run' ) );
 	add_action( 'admin_init', 'plugin_admin_init' );
 }
 
-require_once 'generator-events-shortcodes.php';
 
 
 function plugin_admin_init() {

@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) || die( 'No direct script access allowed!' );
 
 class GeneratorEvents {
 	/**
-	 * TablePress version.
+	 * GeneratorEvent version.
 	 *
 	 * Increases whenever a new plugin version is released.
 	 *
@@ -14,7 +14,7 @@ class GeneratorEvents {
 	const version = '1.0.0';
 
 	/**
-	 * TablePress internal plugin version ("options scheme" version).
+	 * GeneratorEvent internal plugin version ("options scheme" version).
 	 *
 	 * Increases whenever the scheme for the plugin options changes, or on a plugin update.
 	 *
@@ -24,7 +24,7 @@ class GeneratorEvents {
 	const db_version = 32;
 
 	/**
-	 * TablePress "table scheme" (data format structure) version.
+	 * GeneratorEvent "table scheme" (data format structure) version.
 	 *
 	 * Increases whenever the scheme for a $table changes,
 	 * used to be able to update plugin options and table scheme independently.
@@ -34,39 +34,14 @@ class GeneratorEvents {
 	 */
 	const table_scheme_version = 3;
 
-	/**
-	 * Instance of the Options Model.
-	 *
-	 * @since 1.3.0
-	 * @var TablePress_Options_Model
-	 */
-	public static $model_options;
-
-	/**
-	 * Instance of the Table Model.
-	 *
-	 * @since 1.3.0
-	 * @var TablePress_Table_Model
-	 */
-	public static $model_table;
-
+	
 	/**
 	 * Instance of the controller.
 	 *
 	 * @since 1.0.0
-	 * @var TablePress_*_Controller
+	 * @var GeneratorEvent_*_Controller
 	 */
 	public static $controller;
-
-	/**
-	 * Name of the Shortcode to show a TablePress table.
-	 *
-	 * Should only be modified through the filter hook 'tablepress_table_shortcode'.
-	 *
-	 * @since 1.0.0
-	 * @var string
-	 */
-	public static $shortcode = 'generator-event';
 
 	/**
 	 * Actions that have a view and admin menu or nav tab menu entry.

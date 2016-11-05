@@ -1,8 +1,8 @@
 <?php
 /**
- * TablePress Base Controller with members and methods for all controllers
+ * GeneratorEvent Base Controller with members and methods for all controllers
  *
- * @package TablePress
+ * @package GeneratorEvent
  * @subpackage Controllers
  * @author Tobias Bäthge
  * @since 1.0.0
@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || die( 'No direct script access allowed!' );
 		
 /**
  * Base Controller class
- * @package TablePress
+ * @package GeneratorEvent
  * @subpackage Controllers
  * @author Tobias Bäthge
  * @since 1.0.0
