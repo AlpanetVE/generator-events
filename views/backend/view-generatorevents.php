@@ -2,7 +2,7 @@
 /**
  * List Tables View
  *
- * @package TablePress
+ * @package GeneratorEvent
  * @subpackage Views
  * @author Tobias Bäthge
  * @since 1.0.0
@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || die( 'No direct script access allowed!' );
 
 /**
  * List Tables View class
- * @package TablePress
+ * @package GeneratorEvent
  * @subpackage Views
  * @author Tobias Bäthge
  * @since 1.0.0
