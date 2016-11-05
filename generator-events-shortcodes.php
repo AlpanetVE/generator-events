@@ -34,33 +34,44 @@ function alpage_event_shortchode_func( $atts ) { // New function parameter $cont
 
 		
 		$GeneratorEvents = new GeneratorEvents();
+		$EventArray = $GeneratorEvents-> get_itemsEvent(1,6);
+
+		
+		if(!empty($EventArray)):
+
+			foreach ($EventArray as $key => $value) {			
 
 
-
-		$query = new WP_Query( $argrs );
-
-
-		if($query->have_posts()):
-			while($query->have_posts()) : $query->the_post();
 			$result .= '<div class="col-lg-6 col-md-6 col-sm-6">
-			<div class="rock_main_event">
-			  <div class="rock_main_event_image">';
+			<div class="rock_main_event">';
 
 
-				if (has_post_thumbnail($post->ID)){	
-					$src = wp_get_attachment_url( get_post_thumbnail_id( $post->ID ) , 'full' );
-					$thumb_w = '540';
-					$thumb_h = '307';
-					$image = aq_resize($src, $thumb_w, $thumb_h, true);
-
+				$thumb_w = '550';
+				$thumb_h = '200';
+				if ($value['poster']){
+					$src = ALPAGE_URL_UPLOADS.$value['poster'];
+					
 				}else{
-					$image = ROCKON_PATH.'/images/no_image.jpg';
+					$src = ALPAGE_URL.'images/no_image.jpg';
 				}
+				
 
-				$date = get_post_meta( $post->ID, 'rockon_event_sysdate', true );
-				$Ftime = get_post_meta( $post->ID, 'rockon_event_systimefrom', true );
-				$Ttime =  get_post_meta( $post->ID, 'rockon_event_systimeto', true );
-				$desc =  get_post_meta( $post->ID, 'rockon_event_sysdesc', true );
+				$image = aq_resize($src, $thumb_w, $thumb_h, true);
+				
+
+				$date = $value['date'];
+
+				
+
+				$Ftime = strtoupper(date("g:i a",strtotime($value['opening_hour'])));
+				$Ttime = strtoupper(date("g:i a",strtotime($value['closed_hour'])));
+
+				
+				$name =  $value['name'];
+				$desc =  $value['description'];
+				$siteName = $value['name_site'];
+
+
 				$loc =  get_post_meta( $post->ID, 'rockon_event_sysloaction', true );
 				$map =  get_post_meta( $post->ID, 'rockon_event_syscomma', true );
 
@@ -68,25 +79,28 @@ function alpage_event_shortchode_func( $atts ) { // New function parameter $cont
 				if(isset($rockon_data['rockon_language']))
 					setlocale(LC_TIME, $rockon_data['rockon_language']);
 				$ln_mon = strftime("%B",strtotime($date));
-			  
 
 
+				if (!empty($image)){	
+					$result .='<div class="rock_main_event_image">
+				   		<img src="'.esc_url($image).'" alt="" />
+				   		<div class="rock_main_event_image_overlay">
+						</div>
+					  </div>';
+				}
 
-			  $result .= '<img src="'.esc_url($image).'" alt="" /><div class="rock_main_event_image_overlay">
-				</div>
-			  </div>
-			  <div class="rock_main_event_detail">
+			  $result .='<div class="rock_main_event_detail">
 				<div class="rock_event_date">
 				  <div class="event_date">
 					<h1>'.date('d',strtotime($date)).'</h1>
 					<p>'.esc_attr($ln_mon).'</p>
 				  </div>
 				</div>
-				<h2><a href="'.esc_url(get_the_permalink($post->ID)).'">'.__(get_the_title($post->ID),'rockon').'</a></h2>
+				<h2><a href="'.esc_url(get_the_permalink($post->ID)).'">'.$name.'</a></h2>
 				<div class="blog_entry_meta">
 				  <ul>
 					<li><a href=""><i class="fa fa-clock-o"></i> '.esc_attr($Ftime).' - '.esc_attr($Ttime).'</a></li>
-					<li><a href="'.esc_url('https://maps.google.com/maps?q='.$map).'" target="_blank"><i class="fa fa-map-marker"></i> '.__(esc_attr($loc),'rockon').'</a></li>
+					<li><a href="'.esc_url('https://maps.google.com/maps?q='.$map).'" target="_blank"><i class="fa fa-map-marker"></i> '.__(esc_attr($siteName)).'</a></li>
 				  </ul>
 				</div>
 				<p>'.esc_attr($desc).'</p>
@@ -97,7 +111,8 @@ function alpage_event_shortchode_func( $atts ) { // New function parameter $cont
 			if($i%2 == 0){
 				$result .= '<div class="clearfix"></div>';
 			}
-		  endwhile; 
+		
+		}
 		endif;
 	   $result .= '</div></div>';	
    }

@@ -147,7 +147,7 @@ class GeneratorEvents {
 		return $this->db->get_results( $query, ARRAY_A );
 	}
 	
-	public function get_itemsEvent($curr_page, $per_page, $idEvent=null){
+	public function get_itemsEvent($curr_page, $per_page=null, $idEvent=null){
 		$start = (($curr_page-1)*$per_page);
 		$query = "SELECT
 					se.id,
@@ -170,7 +170,11 @@ class GeneratorEvents {
 						$query.=" and se.id='$idEvent'";
 					}
 
-					$query.="  ORDER BY se.id DESC LIMIT $start, $per_page";
+					$query.="  ORDER BY se.id DESC";
+
+					if (!empty($per_page)) {
+						$query.=" LIMIT $start, $per_page";
+					}
 
 		return $this->db->get_results( $query, ARRAY_A );
 	}
