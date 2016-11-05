@@ -16,6 +16,7 @@ function alpage_event_shortchode_func( $atts ) { // New function parameter $cont
 	   $result .= '<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12">';	
 		$today = date('m/d/Y');
+		
 		$argrs = array(
 			'post_type' => 'rockon_event',
 			'meta_key'  => 'rockon_event_sysdate',
@@ -30,17 +31,26 @@ function alpage_event_shortchode_func( $atts ) { // New function parameter $cont
 			'order'     => 'ASC',
 			'posts_per_page' => $no_of_post
 		);
+
+		
+		$GeneratorEvents = new GeneratorEvents();
+
+
+
 		$query = new WP_Query( $argrs );
+
+
 		if($query->have_posts()):
 			while($query->have_posts()) : $query->the_post();
 			$result .= '<div class="col-lg-6 col-md-6 col-sm-6">
 			<div class="rock_main_event">
 			  <div class="rock_main_event_image">';
+
+
 				if (has_post_thumbnail($post->ID)){	
 					$src = wp_get_attachment_url( get_post_thumbnail_id( $post->ID ) , 'full' );
 					$thumb_w = '540';
 					$thumb_h = '307';
-					$src = 'http://localhost/quaszi/wp-content/uploads/generatorEvents/oscar.jpg';
 					$image = aq_resize($src, $thumb_w, $thumb_h, true);
 
 				}else{
@@ -53,7 +63,7 @@ function alpage_event_shortchode_func( $atts ) { // New function parameter $cont
 				$desc =  get_post_meta( $post->ID, 'rockon_event_sysdesc', true );
 				$loc =  get_post_meta( $post->ID, 'rockon_event_sysloaction', true );
 				$map =  get_post_meta( $post->ID, 'rockon_event_syscomma', true );
-				//$map = explode(',',$map);
+
 				global $rockon_data;
 				if(isset($rockon_data['rockon_language']))
 					setlocale(LC_TIME, $rockon_data['rockon_language']);
