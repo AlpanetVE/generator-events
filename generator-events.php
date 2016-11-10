@@ -40,14 +40,16 @@ require ALPAGE_ABSPATH . 'classes/class-generator-events.php';
 require ALPAGE_ABSPATH . 'generator-events-shortcodes.php';
 
 /**BACK END**/
-if (is_admin() == true) {
+if (is_admin()) {
 	
 	register_activation_hook( __FILE__, array( 'GeneratorEvents', 'plugin_activation' ) );
 	register_deactivation_hook( __FILE__, array( 'GeneratorEvents', 'plugin_deactivation' ) );
 	add_action( 'init', array( 'GeneratorEvents', 'run' ) );
 	add_action( 'admin_init', 'plugin_admin_init' );
 }
-
+if (!is_admin()) {
+	require ALPAGE_ABSPATH . 'views/frontend/ge-events.php';
+}
 
 
 function plugin_admin_init() {
