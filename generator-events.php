@@ -48,7 +48,7 @@ if (is_admin()) {
 	add_action( 'admin_init', 'plugin_admin_init' );
 }
 if (!is_admin()) {
-	require ALPAGE_ABSPATH . 'views/frontend/ge-events.php';
+	//require ALPAGE_ABSPATH . 'views/frontend/ge-events.php';
 }
 
 

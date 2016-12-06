@@ -1,6 +1,6 @@
 <?php
 //Events
-/* TEMPORALMENTE BORRADO PARA USAR CLASE
+//TEMPORALMENTE BORRADO PARA USAR CLASE
 add_shortcode( 'alpage_event_shortchode', 'alpage_event_shortchode_func' );
 
 function alpage_event_shortchode_func( $atts ) { // New function parameter $content is added!
@@ -119,7 +119,7 @@ function alpage_event_shortchode_func( $atts ) { // New function parameter $cont
 	   $result .= '</div></div>';	
    }
    return $result;   
-}*/
+}
 
 
 ?>
