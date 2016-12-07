@@ -34,7 +34,7 @@ class GeneratorEvents {
 	 */
 	const table_scheme_version = 3;
 
-	
+
 	/**
 	 * Instance of the controller.
 	 *
@@ -49,7 +49,7 @@ class GeneratorEvents {
 	 * @since 1.0.0
 	 * @var array
 	 */
-	protected $view_actions = array();	
+	protected $view_actions = array();
 
 	private $db;
 
@@ -64,9 +64,9 @@ class GeneratorEvents {
 		$this->db_version = "1.0";
 	}
 
-	/* ACTIVATION 
+	/* ACTIVATION
       Only called when plugin is activated */
-    function plugin_activation() 
+    function plugin_activation()
 	{
         global $wpdb;
 
@@ -92,7 +92,7 @@ class GeneratorEvents {
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_site_event}` (
 			`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			`id_site_fun` int(11) UNSIGNED NOT NULL,
-			`name` varchar(255) NOT NULL,			
+			`name` varchar(255) NOT NULL,
 			`poster` varchar(100) DEFAULT NULL,
 			`date` date NOT NULL,
 			`clothing_type` varchar(100) DEFAULT NULL,
@@ -105,10 +105,9 @@ class GeneratorEvents {
 			`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			`user_id` bigint(20) UNSIGNED NOT NULL,
 			`id_event` int(11) UNSIGNED NOT NULL,
-			`comment` varchar(255) NOT NULL,			
+			`comment` varchar(255) NOT NULL,
 			`img_link` varchar(100) DEFAULT NULL,
-			`video_link` date NOT NULL,			
-			`clothing_type` varchar(100) DEFAULT NULL)";
+			`video_link` date NOT NULL)";
 
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_user_event}` (
 			`user_id` bigint(20) UNSIGNED NOT NULL,
@@ -146,7 +145,7 @@ class GeneratorEvents {
 		$query = "SELECT * FROM $this->table_sites ORDER BY id DESC LIMIT $start, $per_page";
 		return $this->db->get_results( $query, ARRAY_A );
 	}
-	
+
 	public function get_itemsEvent($curr_page, $per_page=null, $idEvent=null){
 		$start = (($curr_page-1)*$per_page);
 		$query = "SELECT
@@ -187,26 +186,26 @@ class GeneratorEvents {
 		return isset($count)?$count:0;
 	}
 	public function deleteSite($id){
-		global $wpdb;		
+		global $wpdb;
 
 		if(is_array($id))
 			$id = sprintf('(%s)', implode(',', $id));
 		else {
 			$id = sprintf('(%d)', $id);
 		}
-        
+
 		$query = "DELETE FROM $this->table_sites WHERE id IN $id";
 		return $wpdb->query($query);
 	}
 	public function deleteEvent($id){
-		global $wpdb;		
+		global $wpdb;
 
 		if(is_array($id))
 			$id = sprintf('(%s)', implode(',', $id));
 		else {
 			$id = sprintf('(%d)', $id);
 		}
-        
+
 		$query = "DELETE FROM $this->table_events WHERE id IN $id";
 		return $wpdb->query($query);
 	}
@@ -234,7 +233,7 @@ class GeneratorEvents {
 			));
 			return $results;
 		}
-		return false;		
+		return false;
 	}
 	public function addEvent(){
 		global $wpdb;
@@ -250,11 +249,11 @@ class GeneratorEvents {
 				'ticket_selling'=>	isset($data['ticket_selling']) ? $data['ticket_selling'] : '',
 				'description'	=>	isset($data['description']) ? $data['description'] : '',
 				'opening_hour' 	=>	isset($data['opening_hour']) ? $data['opening_hour'] : '',
-				'closed_hour'	=>	isset($data['closed_hour']) ? $data['closed_hour'] : ''				
+				'closed_hour'	=>	isset($data['closed_hour']) ? $data['closed_hour'] : ''
 			));
 			return $results;
 		}
-		return false;		
+		return false;
 	}
 	/**
 	 * Upload file
@@ -273,55 +272,55 @@ class GeneratorEvents {
 
 		if(!move_uploaded_file($_FILES['poster']['tmp_name'], $target_path)) {
 			$nameFile='';
-		} 		
+		}
 		return $nameFile;
 	}
 
 	function sanear_string($string)
 	{
-	 
+
 	    $string = trim($string);
-	 
+
 	    $string = str_replace(
 	        array('á', 'à', 'ä', 'â', 'ª', 'Á', 'À', 'Â', 'Ä'),
 	        array('a', 'a', 'a', 'a', 'a', 'A', 'A', 'A', 'A'),
 	        $string
 	    );
-	 
+
 	    $string = str_replace(
 	        array('é', 'è', 'ë', 'ê', 'É', 'È', 'Ê', 'Ë'),
 	        array('e', 'e', 'e', 'e', 'E', 'E', 'E', 'E'),
 	        $string
 	    );
-	 
+
 	    $string = str_replace(
 	        array('í', 'ì', 'ï', 'î', 'Í', 'Ì', 'Ï', 'Î'),
 	        array('i', 'i', 'i', 'i', 'I', 'I', 'I', 'I'),
 	        $string
 	    );
-	 
+
 	    $string = str_replace(
 	        array('ó', 'ò', 'ö', 'ô', 'Ó', 'Ò', 'Ö', 'Ô'),
 	        array('o', 'o', 'o', 'o', 'O', 'O', 'O', 'O'),
 	        $string
 	    );
-	 
+
 	    $string = str_replace(
 	        array('ú', 'ù', 'ü', 'û', 'Ú', 'Ù', 'Û', 'Ü'),
 	        array('u', 'u', 'u', 'u', 'U', 'U', 'U', 'U'),
 	        $string
 	    );
-	 
+
 	    $string = str_replace(
 	        array('ñ', 'Ñ', 'ç', 'Ç'),
 	        array('n', 'N', 'c', 'C',),
 	        $string
 	    );
-	 
+
 	    //Esta parte se encarga de eliminar cualquier caracter extraño
 	    $string = str_replace(
 	        array("\\", "¨", "º", "-", "~",
-	             "", "@", "|", "!", 
+	             "", "@", "|", "!",
 	             "·", "$", "%", "&", "/",
 	             "(", ")", "?", "'", "¡",
 	             "¿", "[", "^", "<code>", "]",
@@ -330,8 +329,8 @@ class GeneratorEvents {
 	             " "),
 	        '',
 	        $string
-	    );	 
-	 
+	    );
+
 	    return $string;
 	}
 
@@ -343,7 +342,7 @@ class GeneratorEvents {
 		$posterNameFile 	= $this->uploadFile();
 		if (!empty($id)) {
 			$data=$_POST['GeForm'];
-			
+
 			$name 			= isset($data['name']) ? $data['name'] : '';
 			$addres 		= isset($data['addres']) ? $data['addres'] : '';
 			$latitude 		= isset($data['latitude']) ? $data['latitude'] : '';
@@ -352,7 +351,7 @@ class GeneratorEvents {
 			$closed_hour 	= isset($data['closed_hour']) ? $data['closed_hour'] : '';
 			$opening_hour 	= isset($data['opening_hour']) ? $data['opening_hour'] : '';
 
-			$sql   = "UPDATE `$this->table_sites` SET  
+			$sql   = "UPDATE `$this->table_sites` SET
 			name = '$name',
 			addres = '$addres',
 			latitude = '$latitude',
@@ -383,9 +382,9 @@ class GeneratorEvents {
 			$description 	= isset($data['description']) ? $data['description'] : '';
 			$opening_hour 	= isset($data['opening_hour']) ? $data['opening_hour'] : '';
 			$closed_hour 	= isset($data['closed_hour']) ? $data['closed_hour'] : '';
-			
 
-			$sql   = "UPDATE `$this->table_events` SET  
+
+			$sql   = "UPDATE `$this->table_events` SET
 			id_site_fun 	= '$id_site_fun',
 			name 			= '$name',
 			poster 			= '$poster',
@@ -419,7 +418,7 @@ class GeneratorEvents {
 	 */
 	public static function load_file( $file, $folder ) {
 		$full_path = ALPAGE_ABSPATH . $folder . '/' . $file;
-		
+
 		$full_path = apply_filters( 'alpage_load_file_full_path', $full_path, $file, $folder );
 		if ( $full_path ) {
 			require_once $full_path;
