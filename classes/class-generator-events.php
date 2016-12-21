@@ -99,7 +99,11 @@ class GeneratorEvents {
 			`ticket_selling` longtext,
 			`description` varchar(255) DEFAULT NULL,
 			`opening_hour` time DEFAULT NULL,
-			`closed_hour` time DEFAULT NULL)";
+			`closed_hour` time DEFAULT NULL,
+			`name_link` varchar(255) DEFAULT NULL,
+			`rating` int(1) DEFAULT NULL)";
+
+			
 
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_user_event_comment}` (
 			`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -146,7 +150,7 @@ class GeneratorEvents {
 		return $this->db->get_results( $query, ARRAY_A );
 	}
 
-	public function get_itemsEvent($curr_page, $per_page=null, $idEvent=null){
+	public function get_itemsEvent($curr_page, $per_page=null, $idEvent=null, $name_link=null){
 		$start = (($curr_page-1)*$per_page);
 		$query = "SELECT
 					se.id,
@@ -160,13 +164,22 @@ class GeneratorEvents {
 					se.ticket_selling,
 					se.description,
 					sf.name as name_site,
-					sf.id as siteid
+					sf.id as siteid,
+					sf.addres,
+					sf.latitude,
+					sf.longitude,
+					sf.environment,
+					sf.opening_hour,
+					sf.closed_hour
 					FROM
 					$this->table_events AS se
 					Inner Join $this->table_sites AS sf ON sf.id = se.id_site_fun where 1";
 
 					if (!empty($idEvent)) {
 						$query.=" and se.id='$idEvent'";
+					}
+					if (!empty($name_link)) {
+						$query.=" and se.name_link='$name_link'";
 					}
 
 					$query.="  ORDER BY se.id DESC";
@@ -240,16 +253,22 @@ class GeneratorEvents {
 		$data=$_POST['GeForm'];
 		if(is_array($data)){
 			$posterNameFile 	= $this->uploadFile();
+			$name 				= isset($data['name']) ? $data['name'] : '';
+
+			$name_link = str_replace(' ', '-', $name_link);
+			$name_link = preg_replace("/[^a-zA-Z0-9.]/", "", $name_link);
+
 			$results = $wpdb->insert($this->table_events, array(
 				'id_site_fun'   =>  isset($data['siteid']) ? $data['siteid'] : '',
-				'name'	  		=>	isset($data['name']) ? $data['name'] : '',
+				'name'	  		=>	isset($name) ? $name : '',
 				'poster'  		=>	isset($posterNameFile) ? $posterNameFile : '',
 				'date'  		=>	isset($data['date']) ? $data['date'] : '',
 				'clothing_type' =>	isset($data['clothing_type']) ? $data['clothing_type'] : '',
 				'ticket_selling'=>	isset($data['ticket_selling']) ? $data['ticket_selling'] : '',
 				'description'	=>	isset($data['description']) ? $data['description'] : '',
 				'opening_hour' 	=>	isset($data['opening_hour']) ? $data['opening_hour'] : '',
-				'closed_hour'	=>	isset($data['closed_hour']) ? $data['closed_hour'] : ''
+				'closed_hour'	=>	isset($data['closed_hour']) ? $data['closed_hour'] : '',
+				'name_link'	=>	isset($name_link) ? $name_link : ''
 			));
 			return $results;
 		}
@@ -438,6 +457,9 @@ class GeneratorEvents {
 		 new GeneratorEvents_Controller();
 	}
 
-
+	public function get_rating($id){
+		$query= "SELECT rating FROM $this->table_events where id = $id;";
+		return $this->db->get_row( $query, ARRAY_A );
+	}
 
 }

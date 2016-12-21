@@ -14,4 +14,8 @@ if (function_exists('plugin_dir_url'))
 	
 	define( 'ALPAGE_MINIMUM_WP_VERSION', '3.7' );
 
+	//---------------------------------------------
+	define( 'STAR_ABSPATH', ALPAGE_ABSPATH);
+	define( 'STAR_URL', ALPAGE_URL);
+
 }

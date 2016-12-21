@@ -36,6 +36,7 @@ Copyright 2012-2016 Alpanet
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   ================================================================================ */
 require_once("define.php");
+
 require ALPAGE_ABSPATH . 'classes/class-generator-events.php';
 require ALPAGE_ABSPATH . 'generator-events-shortcodes.php';
 

@@ -1,0 +1,20 @@
+#form-star{
+  color:black;
+}
+
+#btn-vote{
+  border: 1px solid #FFF5F5;
+border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 1px;
+-o-border-radius: 4px;
+height: 33px;
+width: 7%;
+margin-left: 5px;
+background-color: transparent;
+color: white;
+}
+
+#btn-vote:hover{
+  background: #03ac89;
+}
