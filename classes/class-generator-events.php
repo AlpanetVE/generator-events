@@ -107,7 +107,7 @@ class GeneratorEvents {
 			`id_event` int(11) UNSIGNED NOT NULL,
 			`comment` varchar(255) NOT NULL,
 			`img_link` varchar(100) DEFAULT NULL,
-			`video_link` date NOT NULL)";
+			`video_link` varchar(100) DEFAULT NULL)";
 
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_user_event}` (
 			`user_id` bigint(20) UNSIGNED NOT NULL,
