@@ -8,13 +8,13 @@ add_shortcode( 'alpage_detail_event_shortchode', 'alpage_detail_event_shortchode
 add_shortcode( 'alpage_detail_site_shortchode', 'alpage_detail_site_shortchode' );
 
 
-
 /*------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------*/
 add_shortcode( 'star-rating', 'rating' );
 add_action( 'wp_enqueue_scripts', 'function_rating' );
 
 require_once( ABSPATH . "wp-includes/pluggable.php" );
+
 function function_rating() {
   wp_register_script('rating_1', STAR_URL . 'js/jquery.MetaData.js',array('jquery'));
   wp_register_script('rating_2', STAR_URL . 'js/jquery.rating.js',array('jquery'));
@@ -27,15 +27,14 @@ function function_rating() {
   wp_enqueue_style('rating_styles');
   wp_enqueue_style('rating_styles_2');
 
-//Incluir styes y scripts de fineuploader
-  wp_register_style('fine-uploader',ALPAGE_URL .'css/fine-uploader-new.css',array(),'1','all');
-  wp_register_style('custom-uploader',ALPAGE_URL .'css/custom-uploader.css',array(),'1','all');
-  wp_register_script('script-fine-uploader', ALPAGE_URL . 'js/fine-uploader.js');
+  //Incluir styes y scripts de fineuploader
+	  wp_register_style('fine-uploader',ALPAGE_URL .'css/fine-uploader-new.css',array(),'1','all');
+	  wp_register_style('custom-uploader',ALPAGE_URL .'css/custom-uploader.css',array(),'1','all');
+	  wp_register_script('script-fine-uploader', ALPAGE_URL . 'js/fine-uploader.js');
 
-  wp_enqueue_script('script-fine-uploader');
-  wp_enqueue_style('fine-uploader');
-  wp_enqueue_style('custom-uploader');
-
+	  wp_enqueue_script('script-fine-uploader');
+	  wp_enqueue_style('fine-uploader');
+	  wp_enqueue_style('custom-uploader');
 }
 function rating( $atts ) {
 
@@ -107,68 +106,68 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
     		x[0].innerHTML = '<h1><?php echo $EventArray[0]['name'];?></h1>';
 		 </script>
      <script type="text/template" id="qq-template-manual-trigger">
-        <div class="qq-uploader-selector qq-uploader" qq-drop-area-text="Drop files here">
-            <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
-                <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
-            </div>
-            <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
-                <span class="qq-upload-drop-area-text-selector"></span>
-            </div>
-            <div class="buttons">
-                <div class="qq-upload-button-selector qq-upload-button">
-                    <div>Select files</div>
-                </div>
-                <button type="button" id="trigger-upload" class="btn btn-primary">
-                    <i class="icon-upload icon-white"></i> Upload
-                </button>
-            </div>
-            <span class="qq-drop-processing-selector qq-drop-processing">
-                <span>Processing dropped files...</span>
-                <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
-            </span>
-            <ul class="qq-upload-list-selector qq-upload-list" aria-live="polite" aria-relevant="additions removals">
-                <li>
-                    <div class="qq-progress-bar-container-selector">
-                        <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
-                    </div>
-                    <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
-                    <img class="qq-thumbnail-selector" qq-max-size="100" qq-server-scale>
-                    <span class="qq-upload-file-selector qq-upload-file"></span>
-                    <span class="qq-edit-filename-icon-selector qq-edit-filename-icon" aria-label="Edit filename"></span>
-                    <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
-                    <span class="qq-upload-size-selector qq-upload-size"></span>
-                    <button type="button" class="qq-btn qq-upload-cancel-selector qq-upload-cancel">Cancel</button>
-                    <button type="button" class="qq-btn qq-upload-retry-selector qq-upload-retry">Retry</button>
-                    <button type="button" class="qq-btn qq-upload-delete-selector qq-upload-delete">Delete</button>
-                    <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
-                </li>
-            </ul>
+         <div class="qq-uploader-selector qq-uploader" qq-drop-area-text="Drop files here">
+             <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
+                 <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
+             </div>
+             <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+                 <span class="qq-upload-drop-area-text-selector"></span>
+             </div>
+             <div class="buttons">
+                 <div class="qq-upload-button-selector qq-upload-button">
+                     <div>Select files</div>
+                 </div>
+                 <button type="button" id="trigger-upload" class="btn btn-primary">
+                     <i class="icon-upload icon-white"></i> Upload
+                 </button>
+             </div>
+             <span class="qq-drop-processing-selector qq-drop-processing">
+                 <span>Processing dropped files...</span>
+                 <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+             </span>
+             <ul class="qq-upload-list-selector qq-upload-list" aria-live="polite" aria-relevant="additions removals">
+                 <li>
+                     <div class="qq-progress-bar-container-selector">
+                         <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
+                     </div>
+                     <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+                     <img class="qq-thumbnail-selector" qq-max-size="100" qq-server-scale>
+                     <span class="qq-upload-file-selector qq-upload-file"></span>
+                     <span class="qq-edit-filename-icon-selector qq-edit-filename-icon" aria-label="Edit filename"></span>
+                     <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+                     <span class="qq-upload-size-selector qq-upload-size"></span>
+                     <button type="button" class="qq-btn qq-upload-cancel-selector qq-upload-cancel">Cancel</button>
+                     <button type="button" class="qq-btn qq-upload-retry-selector qq-upload-retry">Retry</button>
+                     <button type="button" class="qq-btn qq-upload-delete-selector qq-upload-delete">Delete</button>
+                     <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
+                 </li>
+             </ul>
 
-            <dialog class="qq-alert-dialog-selector">
-                <div class="qq-dialog-message-selector"></div>
-                <div class="qq-dialog-buttons">
-                    <button type="button" class="qq-cancel-button-selector">Close</button>
-                </div>
-            </dialog>
+             <dialog class="qq-alert-dialog-selector">
+                 <div class="qq-dialog-message-selector"></div>
+                 <div class="qq-dialog-buttons">
+                     <button type="button" class="qq-cancel-button-selector">Close</button>
+                 </div>
+             </dialog>
 
-            <dialog class="qq-confirm-dialog-selector">
-                <div class="qq-dialog-message-selector"></div>
-                <div class="qq-dialog-buttons">
-                    <button type="button" class="qq-cancel-button-selector">No</button>
-                    <button type="button" class="qq-ok-button-selector">Yes</button>
-                </div>
-            </dialog>
+             <dialog class="qq-confirm-dialog-selector">
+                 <div class="qq-dialog-message-selector"></div>
+                 <div class="qq-dialog-buttons">
+                     <button type="button" class="qq-cancel-button-selector">No</button>
+                     <button type="button" class="qq-ok-button-selector">Yes</button>
+                 </div>
+             </dialog>
 
-            <dialog class="qq-prompt-dialog-selector">
-                <div class="qq-dialog-message-selector"></div>
-                <input type="text">
-                <div class="qq-dialog-buttons">
-                    <button type="button" class="qq-cancel-button-selector">Cancel</button>
-                    <button type="button" class="qq-ok-button-selector">Ok</button>
-                </div>
-            </dialog>
-        </div>
-    </script>
+             <dialog class="qq-prompt-dialog-selector">
+                 <div class="qq-dialog-message-selector"></div>
+                 <input type="text">
+                 <div class="qq-dialog-buttons">
+                     <button type="button" class="qq-cancel-button-selector">Cancel</button>
+                     <button type="button" class="qq-ok-button-selector">Ok</button>
+                 </div>
+             </dialog>
+         </div>
+     </script>
 		 <?php
 
 			ob_start();
@@ -207,11 +206,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 
 		  		<?php
 		  			if (!empty($image)){
-
 					echo '<div class="text-center">
-					   		<img src="'.esc_url($image).'" alt="" />';
-
-					echo '<div>
 					   		<img class="banner-event" src="'.esc_url($image).'" alt="" />
 					   		<div class="rock_main_event_image_overlay">
 							</div>
@@ -349,8 +344,6 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
           </div>
         </p>
     </form>
-
-
 							<!-- <div class="col-xs-2">
 >>>>>>> eedba880deb6a142232edd95f0768ed29d2befe3
 								<img class="top-timeline-tweet-box-user-image avatar size32" src="https://pbs.twimg.com/profile_images/774341475802968064/qtMQRmhI_normal.jpg" alt="Oscar J. Lopez">
@@ -409,34 +402,34 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 		  			?>
 				</div>
 	  		</div>
-
         <script>
-            var manualUploader = new qq.FineUploader({
-                element: document.getElementById('fine-uploader-manual-trigger'),
-                template: 'qq-template-manual-trigger',
-                request: {
-                    endpoint: 'php-traditional-server/endpoint.php'
-                },
-                thumbnails: {
-                    placeholders: {
-                        waitingPath: '/source/placeholders/waiting-generic.png',
-                        notAvailablePath: '/source/placeholders/not_available-generic.png'
-                    }
-                },
-                    validation: {
-                        allowedExtensions: ['jpeg', 'jpg', 'png', 'gif'],
-                         itemLimit: 1
-                        // sizeLimit: 2048000 // 50 kB = 50 * 1024 bytes
-                    },
-                autoUpload: false,
-                debug: true
-            });
+        	            var manualUploader = new qq.FineUploader({
+        	                element: document.getElementById('fine-uploader-manual-trigger'),
+        	                template: 'qq-template-manual-trigger',
+        	                request: {
+        	                    endpoint: 'php-traditional-server/endpoint.php'
+        	                },
+        	                thumbnails: {
+        	                    placeholders: {
+        	                        waitingPath: '/source/placeholders/waiting-generic.png',
+        	                        notAvailablePath: '/source/placeholders/not_available-generic.png'
+        	                    }
+        	                },
+        	                    validation: {
+        	                        allowedExtensions: ['jpeg', 'jpg', 'png', 'gif'],
+        	                         itemLimit: 1
+        	                        // sizeLimit: 2048000 // 50 kB = 50 * 1024 bytes
+        	                    },
+        	                autoUpload: false,
+        	                debug: true
+        	            });
 
-            qq(document.getElementById("trigger-upload")).attach("click", function() {
-                manualUploader.uploadStoredFiles();
+        	            qq(document.getElementById("trigger-upload")).attach("click", function() {
+        	                manualUploader.uploadStoredFiles();
 
-            });
-        </script>
+        	            });
+        	        </script>
+
 			<?php
 			$result = ob_get_clean();
 
