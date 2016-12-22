@@ -103,7 +103,7 @@ class GeneratorEvents {
 			`name_link` varchar(255) DEFAULT NULL,
 			`rating` int(1) DEFAULT NULL)";
 
-			
+
 
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_user_event_comment}` (
 			`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -111,7 +111,7 @@ class GeneratorEvents {
 			`id_event` int(11) UNSIGNED NOT NULL,
 			`comment` varchar(255) NOT NULL,
 			`img_link` varchar(100) DEFAULT NULL,
-			`video_link` date NOT NULL)";
+			`video_link` varchar(100) DEFAULT NULL)";
 
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_user_event}` (
 			`user_id` bigint(20) UNSIGNED NOT NULL,
@@ -191,6 +191,25 @@ class GeneratorEvents {
 
 		return $this->db->get_results( $query, ARRAY_A );
 	}
+
+
+//Traer comentarios por evento
+	public function getComentsEvent($id){
+		$user_table=$this->db->prefix."users";
+
+	$sqlSelect="SELECT C.comment AS comentario, U.display_name AS nic, U.ID as id, C.date_time as fecha
+ FROM $this->table_user_event_comment C
+ INNER JOIN $user_table	 U ON C.user_id=U.ID
+ WHERE C.status=1 AND C.id_event=$id ORDER BY C.date_time DESC";
+
+//var_dump($sqlSelect);
+ $comentarios_subidos=$this->db->get_results($sqlSelect);
+
+	return $comentarios_subidos;
+	}
+//
+
+
 	public function getCountSites(){
 		$count = $this->db->get_var("SELECT COUNT(*) FROM $this->table_sites");
 		return isset($count)?$count:0;
@@ -463,4 +482,9 @@ class GeneratorEvents {
 		return $this->db->get_row( $query, ARRAY_A );
 	}
 
+	public function get_rating_user($id_event,$user_id){
+		$query= "SELECT rating FROM $this->table_user_event where user_id = $user_id and id_event =$id_event ;";
+		
+		return $this->db->get_row( $query, ARRAY_A );
+	}
 }
