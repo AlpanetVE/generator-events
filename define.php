@@ -14,6 +14,14 @@ if (function_exists('plugin_dir_url'))
 	
 	define( 'ALPAGE_MINIMUM_WP_VERSION', '3.7' );
 
+
+	define( 'ALPAGE_URL_EVENT', get_site_url(). '/event/' );
+	define( 'ALPAGE_URL_EVENTS', get_site_url(). '/events/' );
+
+	define( 'ALPAGE_URL_SITE', get_site_url(). '/site/' );
+	define( 'ALPAGE_URL_SITES', get_site_url(). '/sites/' );
+
+
 	//---------------------------------------------
 	define( 'STAR_ABSPATH', ALPAGE_ABSPATH);
 	define( 'STAR_URL', ALPAGE_URL);

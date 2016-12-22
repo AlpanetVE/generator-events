@@ -165,6 +165,7 @@ class GeneratorEvents {
 					se.clothing_type,
 					se.ticket_selling,
 					se.description,
+					se.name_link,
 					sf.name as name_site,
 					sf.id as siteid,
 					sf.addres,
