@@ -28,16 +28,19 @@ function function_rating() {
 
 function rating( $atts ) {
 
-   extract( shortcode_atts( array(
+  $args = shortcode_atts( array(
 	  'id_event' => ''
-   ), $atts ) );
+   ), $atts  );
+
+   $id_event=$args['id_event'];
+
+$user = wp_get_current_user();
 
 
-
-
-	$GeneratorEvents = new GeneratorEvents();	
-	$res = $GeneratorEvents-> get_rating($id_event);
-
+	$GeneratorEvents = new GeneratorEvents();
+	$respuesta = $GeneratorEvents-> get_rating_user($id_event,$user->ID);
+  $res=$respuesta['rating'];
+  $url_ajax=ALPAGE_URL.'ajax_vote.php';
 	ob_start();
 	?>
 
@@ -47,8 +50,10 @@ function rating( $atts ) {
 		<input type="radio" class="star" name="api-select-test" value="3" <?php echo ($res==3) ?  "checked='checked'": ""; ?>/>
 		<input type="radio" class="star" name="api-select-test" value="5" <?php echo ($res==4) ?  "checked='checked'": ""; ?>/>
 		<input type="radio" class="star" name="api-select-test" value="4" <?php echo ($res==5) ?  "checked='checked'": ""; ?>/>
-		<input type="button" id="btn-vote" value="Vote"/>
-		<span></span>
+<?php if(is_user_logged_in()): ?>
+    <input type="button" id="btn-vote" data-event="<?php echo $id_event ?>" data-url="<?php echo $url_ajax ?>" value="Vote"/>
+<?php endif; ?>
+    <span></span>
 		<br/>
 	</form>
 
@@ -64,19 +69,21 @@ function rating( $atts ) {
 
 function alpage_detail_event_shortchode( $atts ) { // New function parameter $content is added!
    extract( shortcode_atts( array(
-	  'title' => 'Title',	
+	  'title' => 'Title',
 	  'no_of_post' => '8',
 	  'event_look' => 'simple',
    ), $atts ) );
 
    	$result	= '';
 
-   	global $post;   	
+   	global $post;
 
    	if (isset($_GET['nameEvent']) && !empty($_GET['nameEvent'])) {
 
-		$GeneratorEvents = new GeneratorEvents();	
+		$GeneratorEvents = new GeneratorEvents();
 		$EventArray = $GeneratorEvents-> get_itemsEvent(null,null,null, $_GET['nameEvent']);
+
+    $comentariosArray= $GeneratorEvents->getComentsEvent($EventArray[0]['id']);
 		$value = $EventArray[0];
 
 		 ?>
@@ -85,41 +92,41 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
     		x[0].innerHTML = '<h1><?php echo $EventArray[0]['name'];?></h1>';
 		 </script>
 		 <?php
-		 	
+
 			ob_start();
 
 			$thumb_w = '550';
 			$thumb_h = '200';
 			if ($value['poster']){
 				$src = ALPAGE_URL_UPLOADS.$value['poster'];
-				
+
 			}else{
 				$src = ALPAGE_URL.'images/no_image.jpg';
 			}
-			
+
 
 			$image = aq_resize($src, $thumb_w, $thumb_h, true);
-			
+
 
 			$date = $value['date'];
 
-			
+
 
 			$Ftime = strtoupper(date("g:i a",strtotime($value['opening_hour'])));
 			$Ttime = strtoupper(date("g:i a",strtotime($value['closed_hour'])));
 
-			
+
 			$name =  $value['name'];
 			$desc =  $value['description'];
 			$siteName = $value['name_site'];
 			?>
-			
+
 			<div class="row row-centered center">
 		  		<div class="col-xs-12 col-md-9 brightd">
 
 
 		  		<?php
-		  			if (!empty($image)){	
+		  			if (!empty($image)){
 					echo '<div>
 					   		<img src="'.esc_url($image).'" alt="" />
 					   		<div class="rock_main_event_image_overlay">
@@ -128,7 +135,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 					}
 					?>
 
-					<?php if (!empty($desc)){	
+					<?php if (!empty($desc)){
 					echo '<p class="pmargin">'.esc_attr($desc).'</p>';
 					}
 					?>
@@ -175,12 +182,81 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 						.input-commed {
 						    margin-bottom: 5px;
 						}
+
+              .event-comment{
+                	width: 100%;
+                	float: left;
+                	background: #0d0d0d;
+                	border: 1px solid rgba(0,0,0,0);
+                	padding: 20px;
+                	margin-top: 30px;
+                  color: seashell;
+                }
+
+                .event-comment h4{
+                  font-weight: bold;
+                }
+
+                .comentarios{
+                  margin: 30px;
+                }
+
+                .gravatar img{
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 50%;
+                    margin: 25px 0px;
+                }
+
 					</style>
-					<div class="col-xs-12 col-md-9 col-lg-7 ">
-						
+
+
+<div class="col-xs-12 col-md-9 col-lg-12 ">
+
+<?php  foreach($comentariosArray as $comentario): ?>
+<div class="row">
+  <div class="col-lg-12 col-md-12 col-sm-12 event-comment">
+        <div class="col-lg-2 col-md-2 col-sm-2 gravatar">
+
+        <?php echo get_avatar($comentario->id); ?>
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-10">
+            <p>
+              <h4>  <?php echo $comentario->nic;?> </h4>
+            </p>
+
+            <div class="comentarios">
+            <p>
+              <?php echo $comentario->comentario;?>
+            </p>
+            </div>
+              <h5 class="pull-right"> <?php echo $comentario->fecha ?> </h5>
+        </div>
+    </div>
+
+      </div>
+
+      <?php endforeach; ?>
 
 						<div class="row">
-							<div class="col-xs-2">
+              <h1> Leave a Comment</h1>
+
+    <form class="form-coments" action="" method="post">
+      <div class="col-xs-2">
+        <img class="top-timeline-tweet-box-user-image avatar size32" src="https://pbs.twimg.com/profile_images/774341475802968064/qtMQRmhI_normal.jpg" alt="Oscar J. Lopez">
+      </div>
+      <div class="">
+          <textarea name="comment" rows="5" cols="40" maxlength="254" placeholder="Your Comment"></textarea>
+            <!-- <div id="fine-uploader-manual-trigger"></div> -->
+        </div>
+
+        <p>
+          <div class="btn-submit-comment">
+            <input type="submit" class="btn btn-default btn-md" value="Enviar Comentario">
+          </div>
+        </p>
+    </form>
+							<!-- <div class="col-xs-2">
 								<img class="top-timeline-tweet-box-user-image avatar size32" src="https://pbs.twimg.com/profile_images/774341475802968064/qtMQRmhI_normal.jpg" alt="Oscar J. Lopez">
 							</div>
 							<div class="col-xs-11 col-xs-10">
@@ -197,8 +273,8 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 										<input type="submit" class="btn btn-default btn-md">
 									</div>
 								</div>
-							</div>
-						</div>
+							</div> -->
+	</div>
 
 
 					</div>
@@ -209,7 +285,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 		  			<div style="margin: 20px;"><?php echo $value['name_site'];
 
 		  			function_rating();
-		  			echo rating ( $arrayName = array('id_event' =>  1 ) ); ?>
+		  			echo rating ( $arrayName = array('id_event' =>  $value['id'] ) ); ?>
 		  			</div>
 
 
@@ -232,7 +308,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 
 			<?php
 			$result = ob_get_clean();
-		 
+
    	}else{
 
    	}
@@ -249,7 +325,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 
 function alpage_events_shortchode_func( $atts ) { // New function parameter $content is added!
    extract( shortcode_atts( array(
-	  'title' => 'Title',	
+	  'title' => 'Title',
 	  'no_of_post' => '8',
 	  'event_look' => 'simple',
    ), $atts ) );
@@ -257,12 +333,12 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
    global $post;
    $i = 0;
    $result = $src = $date = $Ftime = $Ttime = $map = $ln_mon = '';
-   
+
    if($event_look == 'simple'){
 	   $result .= '<div class="row">
-		<div class="col-lg-12 col-md-12 col-sm-12">';	
+		<div class="col-lg-12 col-md-12 col-sm-12">';
 		$today = date('m/d/Y');
-		
+
 		$argrs = array(
 			'post_type' => 'rockon_event',
 			'meta_key'  => 'rockon_event_sysdate',
@@ -278,14 +354,14 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 			'posts_per_page' => $no_of_post
 		);
 
-		
+
 		$GeneratorEvents = new GeneratorEvents();
 		$EventArray = $GeneratorEvents-> get_itemsEvent(1,6);
 
-		
+
 		if(!empty($EventArray)):
 
-			foreach ($EventArray as $key => $value) {			
+			foreach ($EventArray as $key => $value) {
 
 
 			$result .= '<div class="col-lg-6 col-md-6 col-sm-6">
@@ -296,23 +372,23 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 				$thumb_h = '200';
 				if ($value['poster']){
 					$src = ALPAGE_URL_UPLOADS.$value['poster'];
-					
+
 				}else{
 					$src = ALPAGE_URL.'images/no_image.jpg';
 				}
-				
+
 
 				$image = aq_resize($src, $thumb_w, $thumb_h, true);
-				
+
 
 				$date = $value['date'];
 
-				
+
 
 				$Ftime = strtoupper(date("g:i a",strtotime($value['opening_hour'])));
 				$Ttime = strtoupper(date("g:i a",strtotime($value['closed_hour'])));
 
-				
+
 				$name =  $value['name'];
 				$desc =  $value['description'];
 				$siteName = $value['name_site'];
@@ -327,7 +403,7 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 				$ln_mon = strftime("%B",strtotime($date));
 
 
-				if (!empty($image)){	
+				if (!empty($image)){
 					$result .='<div>
 				   		<img src="'.esc_url($image).'" alt="" />
 				   		<div class="rock_main_event_image_overlay">
@@ -357,10 +433,10 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 			if($i%2 == 0){
 				$result .= '<div class="clearfix"></div>';
 			}
-		
+
 		}
 		endif;
-	   $result .= '</div></div>';	
+	   $result .= '</div></div>';
    }
    return $result;
 }
