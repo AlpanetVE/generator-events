@@ -111,7 +111,9 @@ class GeneratorEvents {
 			`id_event` int(11) UNSIGNED NOT NULL,
 			`comment` varchar(255) NOT NULL,
 			`img_link` varchar(100) DEFAULT NULL,
-			`video_link` varchar(100) DEFAULT NULL)";
+			`video_link` varchar(100) DEFAULT NULL,
+			`date_time` datetime DEFAULT NULL,
+			`status` int(11) NOT NULL)";
 
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_user_event}` (
 			`user_id` bigint(20) UNSIGNED NOT NULL,
@@ -483,7 +485,7 @@ class GeneratorEvents {
 
 	public function get_rating_user($id_event,$user_id){
 		$query= "SELECT rating FROM $this->table_user_event where user_id = $user_id and id_event =$id_event ;";
-		
+
 		return $this->db->get_row( $query, ARRAY_A );
 	}
 }

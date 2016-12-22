@@ -127,7 +127,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 
 		  		<?php
 		  			if (!empty($image)){
-					echo '<div>
+					echo '<div class="text-center">
 					   		<img src="'.esc_url($image).'" alt="" />
 					   		<div class="rock_main_event_image_overlay">
 							</div>
