@@ -146,6 +146,49 @@ class GeneratorEvents {
 		}https://developer.wordpress.org/reference/functions/wp_enqueue_script/
 		return $instance;
 	}
+
+	public function process_data($values,$files){
+	switch ($values['ge_tipo']) {
+		case 'ge_comment':
+			$this->sendComment($values,$files);
+			break;
+
+		default:
+			# code...
+			break;
+	}
+
+}
+
+public function sendComment($values,$files){
+
+$comment=(string)$values['comment'];
+$user = wp_get_current_user();
+$id_event=$values['event_id'];
+$url=$values['url'];
+
+$resp=$this->db->query( $this->db->prepare(
+	"
+		INSERT INTO $this->table_user_event_comment
+		(user_id, id_event, comment, date_time, status)
+		VALUES ( %d, %d, %s, now(), 1 )
+	",
+  array(
+        $user->ID,
+        $id_event,
+        $comment
+       )
+    ));
+
+	//if($resp)	{
+
+		wp_redirect($url);
+		exit;
+		//$url = home_url( '/notification' );
+	//}
+
+}
+
 	public function get_page_itemsSites($curr_page, $per_page){
 		$start = (($curr_page-1)*$per_page);
 		$query = "SELECT * FROM $this->table_sites ORDER BY id DESC LIMIT $start, $per_page";

@@ -19,7 +19,7 @@ Text Domain: generator-events
 License: GPL 2
 Donate URI: https://alpanet.com.ve/
 */
-/* ================================================================================ 
+/* ================================================================================
 Copyright 2012-2016 Alpanet
 
 	This program is free software; you can redistribute it and/or modify
@@ -42,7 +42,7 @@ require ALPAGE_ABSPATH . 'generator-events-shortcodes.php';
 
 /**BACK END**/
 if (is_admin()) {
-	
+
 	register_activation_hook( __FILE__, array( 'GeneratorEvents', 'plugin_activation' ) );
 	register_deactivation_hook( __FILE__, array( 'GeneratorEvents', 'plugin_deactivation' ) );
 	add_action( 'init', array( 'GeneratorEvents', 'run' ) );
@@ -52,6 +52,15 @@ if (!is_admin()) {
 	//require ALPAGE_ABSPATH . 'views/frontend/ge-events.php';
 }
 
+add_action( 'admin_post', 'ge_process_forms' );
+
+function ge_process_forms(){
+	$ge = new GeneratorEvents();
+//var_dump($_POST);
+//var_dump($_FILES);
+
+$ge->process_data($_POST);
+}
 
 function plugin_admin_init() {
     wp_enqueue_script('datetimepicker',ALPAGE_URL.'views/backend/js/jquery.datetimepicker.full.min.js');
@@ -75,12 +84,12 @@ function alpage_get_menu( ) {
 
 
     switch ($current_page) {
-        case 'GeneratorSites':	
+        case 'GeneratorSites':
         	include('views/backend/view-generatorsites.php');
             $ObjList = new GeneratorSiteList();
             $ObjList ->doAction($action);
             break;
-        case 'GeneratorEvents': 
+        case 'GeneratorEvents':
             include('views/backend/view-generatorevents.php');
             $ObjList = new GeneratorEventList();
             $ObjList ->doAction($action);

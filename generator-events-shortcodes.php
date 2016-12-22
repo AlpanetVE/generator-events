@@ -100,6 +100,9 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
     $comentariosArray= $GeneratorEvents->getComentsEvent($EventArray[0]['id']);
 		$value = $EventArray[0];
 
+    global $wp;
+$current_url = home_url(add_query_arg(array(),$wp->request)).'?nameEvent='.$_GET['nameEvent'] ;
+
 		 ?>
 		 <script type="text/javascript">
 		 	var x = document.getElementsByClassName("rock_heading");
@@ -329,7 +332,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 						<div class="row">
               <h1> Leave a Comment</h1>
 
-    <form class="form-coments" action="" method="post">
+    <form class="form-coments" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="post">
       <div class="col-xs-2">
         <img class="top-timeline-tweet-box-user-image avatar size32" src="https://pbs.twimg.com/profile_images/774341475802968064/qtMQRmhI_normal.jpg" alt="Oscar J. Lopez">
       </div>
@@ -343,6 +346,9 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
             <input type="submit" class="btn btn-default btn-md" value="Enviar Comentario">
           </div>
         </p>
+        <input type="hidden" name="url" value="<?php echo  $current_url ?>">
+        <input type="hidden" name="event_id" value= "<?php echo $value['id'] ?>" >
+        <input type="hidden" name="ge_tipo" value="ge_comment">
     </form>
 							<!-- <div class="col-xs-2">
 >>>>>>> eedba880deb6a142232edd95f0768ed29d2befe3
