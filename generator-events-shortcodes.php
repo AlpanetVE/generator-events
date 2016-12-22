@@ -5,13 +5,14 @@ add_shortcode( 'alpage_events_shortchode', 'alpage_events_shortchode_func' );
 
 add_shortcode( 'alpage_detail_event_shortchode', 'alpage_detail_event_shortchode' );
 
+add_shortcode( 'alpage_detail_site_shortchode', 'alpage_detail_site_shortchode' );
+
+
+/*------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------*/
 add_shortcode( 'star-rating', 'rating' );
 add_action( 'wp_enqueue_scripts', 'function_rating' );
-
-
 require_once( ABSPATH . "wp-includes/pluggable.php" );
-
-
 function function_rating() {
   wp_register_script('rating_1', STAR_URL . 'js/jquery.MetaData.js',array('jquery'));
   wp_register_script('rating_2', STAR_URL . 'js/jquery.rating.js',array('jquery'));
@@ -23,24 +24,15 @@ function function_rating() {
   wp_enqueue_script('rating_3');
   wp_enqueue_style('rating_styles');
   wp_enqueue_style('rating_styles_2');
-
 }
-
 function rating( $atts ) {
-
    extract( shortcode_atts( array(
 	  'id_event' => ''
    ), $atts ) );
-
-
-
-
 	$GeneratorEvents = new GeneratorEvents();	
 	$res = $GeneratorEvents-> get_rating($id_event);
-
 	ob_start();
 	?>
-
 	<form id="form-star" name="api-select">
 		<input type="radio" class="star" name="api-select-test" value="1" <?php echo ($res==1) ?  "checked='checked'": "";?>/>
 		<input type="radio" class="star" name="api-select-test" value="2" <?php echo ($res==2) ?  "checked='checked'": ""; ?>/>
@@ -51,16 +43,20 @@ function rating( $atts ) {
 		<span></span>
 		<br/>
 	</form>
-
-
-
 	<?php
 	$output = ob_get_clean();
 	return $output;
-
 }
 
+/*------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------*/
 
+function alpage_detail_event_shortchode( $atts ) { // New function parameter $content is added!
+	if (isset($_GET['nameSite']) && !empty($_GET['nameSite'])) {
+		
+
+	}
+}
 
 function alpage_detail_event_shortchode( $atts ) { // New function parameter $content is added!
    extract( shortcode_atts( array(
@@ -112,6 +108,8 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 			$name =  $value['name'];
 			$desc =  $value['description'];
 			$siteName = $value['name_site'];
+
+			
 			?>
 			
 			<div class="row row-centered center">
@@ -121,7 +119,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 		  		<?php
 		  			if (!empty($image)){	
 					echo '<div>
-					   		<img src="'.esc_url($image).'" alt="" />
+					   		<img class="banner-event" src="'.esc_url($image).'" alt="" />
 					   		<div class="rock_main_event_image_overlay">
 							</div>
 						  </div>';
@@ -175,12 +173,20 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 						.input-commed {
 						    margin-bottom: 5px;
 						}
+						.banner-event{
+							max-width: 100%;
+						}
+						.img-user{
+							text-align: right;
+    						padding: 0px;
+						}
 					</style>
+					<?php if(is_user_logged_in()){ ?>
 					<div class="col-xs-12 col-md-9 col-lg-7 ">
 						
 
 						<div class="row">
-							<div class="col-xs-2">
+							<div class="col-xs-2 img-user">
 								<img class="top-timeline-tweet-box-user-image avatar size32" src="https://pbs.twimg.com/profile_images/774341475802968064/qtMQRmhI_normal.jpg" alt="Oscar J. Lopez">
 							</div>
 							<div class="col-xs-11 col-xs-10">
@@ -204,6 +210,9 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 					</div>
 					<hr class="simple">
 
+					<?php } ?>
+
+
 	  			</div>
 	  			<div class="col-xs-12 col-md-3 ">
 		  			<div style="margin: 20px;"><?php echo $value['name_site'];
@@ -212,9 +221,15 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 		  			echo rating ( $arrayName = array('id_event' =>  1 ) ); ?>
 		  			</div>
 
-
-		  			<?php if (!empty($value['date'])) {
-		  				echo '<p> Date: '.$value['date'].'</p>';
+		  			<?php  
+		  			if (!empty($date)) {
+		  				echo '<p> Date: '.strftime("%B %d, %Y",strtotime($date)).'</p>';
+		  				if (!empty($Ftime)) {
+		  					echo '&nbsp;&nbsp;&nbsp;'.$Ftime;
+		  				}
+		  				if (!empty($Ttime)) {
+		  					echo ' - '.$Ttime.'<br><br>';
+		  				}
 		  			}
 		  			if (!empty($value['clothing_type'])) {
 		  				echo '<p> Clothing: '.$value['clothing_type'].'</p>';
@@ -317,6 +332,7 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 				$desc =  $value['description'];
 				$siteName = $value['name_site'];
 
+				$name_link =  $value['name_link'];
 
 				//$loc =  get_post_meta( $post->ID, 'rockon_event_sysloaction', true );
 				$map =  get_post_meta( $post->ID, 'rockon_event_syscomma', true );
@@ -329,7 +345,7 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 
 				if (!empty($image)){	
 					$result .='<div>
-				   		<img src="'.esc_url($image).'" alt="" />
+				   		<a href="'.ALPAGE_URL_EVENT.'?nameEvent='.$value['name_link'].'"><img src="'.esc_url($image).'" alt="" /></a>
 				   		<div class="rock_main_event_image_overlay">
 						</div>
 					  </div>';
@@ -337,12 +353,12 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 
 			  $result .='<div class="rock_main_event_detail">
 				<div class="rock_event_date">
-				  <div class="event_date">
+				   <div class="event_date">
 					<h1>'.date('d',strtotime($date)).'</h1>
 					<p>'.esc_attr($ln_mon).'</p>
 				  </div>
 				</div>
-				<h2><a href="'.esc_url(get_the_permalink($post->ID)).'">'.$name.'</a></h2>
+				<h2><a href="'.ALPAGE_URL_EVENT.'?nameEvent='.$value['name_link'].'">'.$name.'</a></h2>
 				<div class="blog_entry_meta">
 				  <ul>
 					<li><a href=""><i class="fa fa-clock-o"></i> '.esc_attr($Ftime).' - '.esc_attr($Ttime).'</a></li>
