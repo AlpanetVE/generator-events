@@ -13,6 +13,8 @@ add_shortcode( 'alpage_detail_site_shortchode', 'alpage_detail_site_shortchode' 
 add_shortcode( 'star-rating', 'rating' );
 add_action( 'wp_enqueue_scripts', 'function_rating' );
 
+wp_register_style('generateFrontEvent', STAR_URL . 'css/generateFrontEvent.css', array(), '1', 'all');
+
 require_once( ABSPATH . "wp-includes/pluggable.php" );
 
 function function_rating() {
@@ -75,9 +77,111 @@ function rating( $atts ) {
 /*------------------------------------------------------------------------*/
 
 function alpage_detail_site_shortchode( $atts ) { // New function parameter $content is added!
-	if (isset($_GET['nameSite']) && !empty($_GET['nameSite'])) {
+	$result	= '';
 
 
+	extract( shortcode_atts( array(
+	  'title' => 'Title',
+	  'no_of_post' => '8',
+	  'event_look' => 'simple',
+   ), $atts ) );
+
+   	wp_enqueue_style('generateFrontEvent');
+
+   	if (isset($_GET['nameSite']) && !empty($_GET['nameSite'])) {
+   		$name_link			= $_GET['nameSite'];
+		$GeneratorEvents 	= new GeneratorEvents();
+		$EventArray 		= $GeneratorEvents->get_itemsEvent(null,null,null,null,$name_link);
+
+
+		$value = $EventArray[0];
+
+		$Ftime = strtoupper(date("g:i a",strtotime($value['opening_hour'])));
+		$Ttime = strtoupper(date("g:i a",strtotime($value['closed_hour'])));
+
+		global $wp;
+		$current_url = home_url(add_query_arg(array(),$wp->request)).'?nameSite='.$_GET['nameSite'] ;
+
+		 ?>
+		<script type="text/javascript">
+			var x = document.getElementsByClassName("rock_heading");
+			x[0].innerHTML = '<h1><?php echo $value['name_site'];?></h1>';
+		</script>
+		<?php
+		ob_start();
+
+			?>
+
+		<div class="row row-centered center">
+			<div class="col-xs-12 col-md-9 brightd site-event-main">
+
+
+
+				<?php if (!empty($EventArray)){?>
+					<div class="title-site-event">
+						Events
+					</div>
+					<?php
+					foreach ($EventArray as $key => $Event) {
+						$thumb_w = '370';
+						$thumb_h = '148';
+
+
+						if ($Event['poster']){
+							$src = ALPAGE_URL_UPLOADS.$Event['poster'];
+						}else{
+							$src = ALPAGE_URL.'images/no_image.jpg';
+						}
+						$image = aq_resize($src, $thumb_w, $thumb_h, true);
+
+						?>
+						<div class="site-event-cont">
+							<a href="<?php echo ALPAGE_URL_EVENT.'?nameEvent='.$Event['name_link'];?>">
+								<img class="banner-event" src="<?php echo esc_url($image);?>" alt="" />
+							</a>
+							<div class="rock_main_event_image_overlay">
+							</div>
+						</div>
+					<?php }
+					} 	?>
+
+
+				<?php if (!empty($desc)){ ?>
+					<p class="pmargin"><?php echo esc_attr($desc);?></p>
+				<?php } ?>
+
+				<hr>
+
+
+			</div>
+			<div class="col-xs-12 col-md-3 ">
+				<div style="margin: 20px;">
+					<?php echo $value['name'];
+
+					function_rating();
+					echo rating ( $arrayName = array('id_event' =>  $value['id'] ) ); ?>
+				</div>
+
+				<?php
+				if (!empty($Ftime)) {
+					echo 'Open: '.$Ftime.'<br>';
+				}
+				if (!empty($Ttime)) {
+					echo 'Close: '.$Ttime.'<br><br>';
+				}
+				if (!empty($value['clothing_type'])) {
+					echo '<p> Clothing: '.$value['clothing_type'].'</p>';
+				}
+				if (!empty($value['ticket_selling'])) {
+					echo '<p> Ticket selling: '.$value['ticket_selling'].'</p>';
+				}
+				if (!empty($value['addres'])) {
+					echo '<p> Addres: '.$value['addres'].'</p>';
+				}
+				?>
+			</div>
+		</div>
+	  		<?php
 	}
 }
 
@@ -89,26 +193,25 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
    ), $atts ) );
 
    	$result	= '';
-
-   	global $post;
-
+   	wp_enqueue_style('generateFrontEvent');
    	if (isset($_GET['nameEvent']) && !empty($_GET['nameEvent'])) {
 
 		$GeneratorEvents = new GeneratorEvents();
 		$EventArray = $GeneratorEvents-> get_itemsEvent(null,null,null, $_GET['nameEvent']);
 
-    $comentariosArray= $GeneratorEvents->getComentsEvent($EventArray[0]['id']);
+
+		$comentariosArray= $GeneratorEvents->getComentsEvent($EventArray[0]['id']);
 		$value = $EventArray[0];
 
-    global $wp;
-$current_url = home_url(add_query_arg(array(),$wp->request)).'?nameEvent='.$_GET['nameEvent'] ;
+		global $wp;
+		$current_url = home_url(add_query_arg(array(),$wp->request)).'?nameEvent='.$_GET['nameEvent'] ;
 
 		 ?>
-		 <script type="text/javascript">
-		 	var x = document.getElementsByClassName("rock_heading");
-    		x[0].innerHTML = '<h1><?php echo $EventArray[0]['name'];?></h1>';
-		 </script>
-     <script type="text/template" id="qq-template-manual-trigger">
+		<script type="text/javascript">
+			var x = document.getElementsByClassName("rock_heading");
+			x[0].innerHTML = '<h1><?php echo $value['name'];?></h1>';
+		</script>
+		<script type="text/template" id="qq-template-manual-trigger">
          <div class="qq-uploader-selector qq-uploader" qq-drop-area-text="Drop files here">
              <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
                  <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
@@ -175,7 +278,7 @@ $current_url = home_url(add_query_arg(array(),$wp->request)).'?nameEvent='.$_GET
 
 			ob_start();
 
-			$thumb_w = '550';
+			$thumb_w = '500';
 			$thumb_h = '200';
 			if ($value['poster']){
 				$src = ALPAGE_URL_UPLOADS.$value['poster'];
@@ -223,84 +326,6 @@ $current_url = home_url(add_query_arg(array(),$wp->request)).'?nameEvent='.$_GET
 					?>
 
 					<hr>
-
-					<style type="text/css">
-						.pmargin{
-							margin: 10px 20px 10px 10px;
-						}
-						.img-add-photo{
-							float: left;
-						}
-						.btn-submit-comment{
-							float: right;
-						}
-						.input-commed textarea{
-							width: 100% !important;
-							color: black;
-						}
-						.img-add-photo span.glyphicon {
-						    font-size: 30px;
-						    margin-left: 1px;
-						}
-						.img-add-photo input{
-							position: absolute;
-						    top: 0;
-						    z-index: 3;
-						    width: 100%;
-						    height: 100%;
-						    cursor: pointer;
-						    opacity: 0;
-						    padding-top: 47px;
-						}
-						.brightd{
-							border-right: 1px solid #ddd;
-						}
-						hr.simple{
-							float: left;
-						    width: 100%;
-						    border-color: rgba(125, 125, 125, 0.28);
-						}
-
-						.input-commed {
-						    margin-bottom: 5px;
-						}
-
-						.banner-event{
-							max-width: 100%;
-						}
-						.img-user{
-							text-align: right;
-    						padding: 0px;
-						}
-
-
-              .event-comment{
-                	width: 100%;
-                	float: left;
-                	background: #0d0d0d;
-                	border: 1px solid rgba(0,0,0,0);
-                	padding: 20px;
-                	margin-top: 30px;
-                  color: seashell;
-                }
-
-                .event-comment h4{
-                  font-weight: bold;
-                }
-
-                .comentarios{
-                  margin: 30px;
-                }
-
-                .gravatar img{
-                    width: 100px;
-                    height: 100px;
-                    border-radius: 50%;
-                    margin: 25px 0px;
-                }
-
-					</style>
-
 <?php if(is_user_logged_in()){ ?>
 <div class="col-xs-12 col-md-9 col-lg-12 ">
 
@@ -350,25 +375,6 @@ $current_url = home_url(add_query_arg(array(),$wp->request)).'?nameEvent='.$_GET
         <input type="hidden" name="event_id" value= "<?php echo $value['id'] ?>" >
         <input type="hidden" name="ge_tipo" value="ge_comment">
     </form>
-							<!-- <div class="col-xs-2">
->>>>>>> eedba880deb6a142232edd95f0768ed29d2befe3
-								<img class="top-timeline-tweet-box-user-image avatar size32" src="https://pbs.twimg.com/profile_images/774341475802968064/qtMQRmhI_normal.jpg" alt="Oscar J. Lopez">
-							</div>
-							<div class="col-xs-11 col-xs-10">
-								<div class="input-commed">
-									<textarea></textarea>
-								</div>
-								<div class="foot-form-add">
-									<div class="img-add-photo">
-										<span class="glyphicon glyphicon-camera" aria-hidden="true">
-											<input type="file" name="media_empty" accept="image/gif,image/jpeg,image/jpg,image/png,video/mp4,video/x-m4v" multiple="" class="file-input js-tooltip" data-original-title="Añadir fotos o video" data-delay="150">
-										</span>
-									</div>
-									<div class="btn-submit-comment">
-										<input type="submit" class="btn btn-default btn-md">
-									</div>
-								</div>
-							</div> -->
 	</div>
 
 <div id="fine-uploader-manual-trigger"></div>
@@ -499,7 +505,7 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 			<div class="rock_main_event">';
 
 
-				$thumb_w = '550';
+				$thumb_w = '500';
 				$thumb_h = '200';
 				if ($value['poster']){
 					$src = ALPAGE_URL_UPLOADS.$value['poster'];
@@ -554,7 +560,7 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 				<div class="blog_entry_meta">
 				  <ul>
 					<li><a href=""><i class="fa fa-clock-o"></i> '.esc_attr($Ftime).' - '.esc_attr($Ttime).'</a></li>
-					<li><a href="'.esc_url('https://maps.google.com/maps?q='.$map).'" target="_blank"><i class="fa fa-map-marker"></i> '.__(esc_attr($siteName)).'</a></li>
+					<li><a href="'.ALPAGE_URL_SITE.'?nameSite='.$value['site_link'].'" target="_blank"><i class="fa fa-map-marker"></i> '.__(esc_attr($siteName)).'</a></li>
 				  </ul>
 				</div>
 				<p>'.esc_attr($desc).'</p>
