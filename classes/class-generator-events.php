@@ -87,7 +87,8 @@ class GeneratorEvents {
 			`rating` int(1) DEFAULT NULL,
 			`environment` varchar(255) DEFAULT NULL,
 			`opening_hour` time DEFAULT NULL,
-			`closed_hour` time DEFAULT NULL)";
+			`closed_hour` time DEFAULT NULL,
+			`name_link` varchar(255) DEFAULT NULL)";
 
 		$sql[] = "CREATE TABLE IF NOT EXISTS `{$table_site_event}` (
 			`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -195,7 +196,7 @@ $resp=$this->db->query( $this->db->prepare(
 		return $this->db->get_results( $query, ARRAY_A );
 	}
 
-	public function get_itemsEvent($curr_page, $per_page=null, $idEvent=null, $name_link=null){
+	public function get_itemsEvent($curr_page=null, $per_page=null, $idEvent=null, $name_link=null, $name_link_site=null){
 		$start = (($curr_page-1)*$per_page);
 		$query = "SELECT
 					se.id,
@@ -216,7 +217,8 @@ $resp=$this->db->query( $this->db->prepare(
 					sf.longitude,
 					sf.environment,
 					sf.opening_hour,
-					sf.closed_hour
+					sf.closed_hour,
+					sf.name_link as site_link
 					FROM
 					$this->table_events AS se
 					Inner Join $this->table_sites AS sf ON sf.id = se.id_site_fun where 1";
@@ -226,6 +228,9 @@ $resp=$this->db->query( $this->db->prepare(
 					}
 					if (!empty($name_link)) {
 						$query.=" and se.name_link='$name_link'";
+					}
+					if (!empty($name_link_site)) {
+						$query.=" and sf.name_link='$name_link_site'";
 					}
 
 					$query.="  ORDER BY se.id DESC";
@@ -287,11 +292,14 @@ $resp=$this->db->query( $this->db->prepare(
 		$query = "DELETE FROM $this->table_events WHERE id IN $id";
 		return $wpdb->query($query);
 	}
-	public function getSite($id=''){
+	public function getSite($id='', $name_link=''){
 
 		$query = "SELECT * FROM $this->table_sites where 1";
 		if (!empty($id)) {
 			$query.=" and id='$id'";
+		}
+		if (!empty($name_link)) {
+			$query.=" and name_link='$name_link'";
 		}
 		return $this->db->get_results( $query, ARRAY_A );
 	}
@@ -299,15 +307,18 @@ $resp=$this->db->query( $this->db->prepare(
 	public function addSite(){
 		global $wpdb;
 		$data=$_POST['GeForm'];
+		$name 		= isset($data['name']) ? $data['name'] : '';
+		$name_link 	= $this->createNameLink($name,'site');
 		if(is_array($data)){
 			$results = $wpdb->insert($this->table_sites, array(
-				'name'    		=>  isset($data['name']) ? $data['name'] : '',
+				'name'    		=>  $name,
 				'addres'	  	=>	isset($data['addres']) ? $data['addres'] : '',
 				'latitude'  	=>	isset($data['latitude']) ? $data['latitude'] : '',
 				'longitude' 	=>	isset($data['longitude']) ? $data['longitude'] : '',
 				'environment'	=>	isset($data['environment']) ? $data['environment'] : '',
 				'closed_hour'	=>	isset($data['closed_hour']) ? $data['closed_hour'] : '',
-				'opening_hour' 	=>	isset($data['opening_hour']) ? $data['opening_hour'] : ''
+				'opening_hour' 	=>	isset($data['opening_hour']) ? $data['opening_hour'] : '',
+				'name_link' 	=>	$name_link
 			));
 			return $results;
 		}
@@ -320,14 +331,18 @@ $resp=$this->db->query( $this->db->prepare(
 	  return str_replace($a, $b, $str); 
 	}
 
-	public function createNameLink($name){
+	public function createNameLink($name,$table){
 		
 		$name_link = strtolower(preg_replace(array('/[^a-zA-Z0-9 -]/', '/[ -]+/', '/^-|-$/'),array('', '-', ''), $this->remove_accent($name)));
 
-		$row = $this->get_itemsEvent(null, null, null,$name_link);
+		if ($table=='site') {
+			$row = $this->getSite(null,$name_link);
+		}elseif ($table=='event') {
+			$row = $this->get_itemsEvent(null, null, null,$name_link);
+		}
 
 		if(!empty($row[0]) && !empty($name_link))
-			return $this->createNameLink($name_link.'(1)');
+			return $this->createNameLink($name_link.'(1)',$table);
 
 		return $name_link;
 	}
@@ -338,7 +353,7 @@ $resp=$this->db->query( $this->db->prepare(
 			$posterNameFile 	= $this->uploadFile();
 			$name 				= isset($data['name']) ? $data['name'] : '';
 
-			$name_link = $this->createNameLink($name);
+			$name_link = $this->createNameLink($name,'event');
 			
 
 			$results = $wpdb->insert($this->table_events, array(
