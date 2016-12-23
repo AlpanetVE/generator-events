@@ -409,11 +409,12 @@ $current_url = home_url(add_query_arg(array(),$wp->request)).'?nameEvent='.$_GET
 				</div>
 	  		</div>
         <script>
+        url_endpoint='<?php echo ALPAGE_URL.'endpoint.php' ?>';
         	            var manualUploader = new qq.FineUploader({
         	                element: document.getElementById('fine-uploader-manual-trigger'),
         	                template: 'qq-template-manual-trigger',
         	                request: {
-        	                    endpoint: 'php-traditional-server/endpoint.php'
+        	                    endpoint: url_endpoint//'php-traditional-server/endpoint.php'
         	                },
         	                thumbnails: {
         	                    placeholders: {

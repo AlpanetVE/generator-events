@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) || die( 'No direct script access allowed!' );
 
+require 'cloudinary/Cloudinary.php';
+require 'cloudinary/Uploader.php';
+require 'cloudinary/Api.php';
+
 class GeneratorEvents {
 	/**
 	 * GeneratorEvent version.
@@ -62,6 +66,7 @@ class GeneratorEvents {
 		$this->table_user_event_comment = $wpdb->prefix."alpage_user_event_comment";
 		$this->table_user_event = $wpdb->prefix."alpage_user_event";
 		$this->db_version = "1.0";
+	//	$this->uploadDirectory=ALPAGE_PATH_UPLOADS;
 	}
 
 	/* ACTIVATION
@@ -160,23 +165,53 @@ class GeneratorEvents {
 
 }
 
-public function sendComment($values,$files){
+public function sendCloudinary($file){
+	\Cloudinary::config(array(
+	        "cloud_name" => "darwin123",
+	        "api_key" => "893138379283575",
+	        "api_secret" => "ZuvV_dn10UdSkKyC52KRKO9a3FQ"
+	      ));
+		//		var_dump($file);
+				//$ruta='../../'.$file;
+//$ruta=getcwd().'../../'.$file;
 
+$ruta=ALPAGE_ABSPATH.$file;
+				//$ruta=ALPAGE_URL.$file;
+				 $respuesta=\Cloudinary\Uploader::upload($ruta);
+
+			return $respuesta;
+}
+
+public function sendComment($values,$files){
+$imgLink='';
 $comment=(string)$values['comment'];
 $user = wp_get_current_user();
 $id_event=$values['event_id'];
 $url=$values['url'];
 
+
+// var_dump($_COOKIE['ruta_foto_temp']);
+// die();
+
+if(isset($_COOKIE['ruta_foto_temp'])){
+$res=$this->sendCloudinary($_COOKIE['ruta_foto_temp']);
+$imgLink=$res['url'];
+unlink(ALPAGE_ABSPATH.$_COOKIE['ruta_foto_temp']);
+setcookie("ruta_foto_temp", "", time() - 3600,'/');
+}
+
+
 $resp=$this->db->query( $this->db->prepare(
 	"
 		INSERT INTO $this->table_user_event_comment
-		(user_id, id_event, comment, date_time, status)
-		VALUES ( %d, %d, %s, now(), 1 )
+		(user_id, id_event, comment, img_link, date_time, status)
+		VALUES ( %d, %d, %s, %s,now(), 1 )
 	",
   array(
         $user->ID,
         $id_event,
-        $comment
+        $comment,
+				$imgLink
        )
     ));
 
@@ -313,15 +348,15 @@ $resp=$this->db->query( $this->db->prepare(
 		}
 		return false;
 	}
-	function remove_accent($str) 
-	{ 
-	  $a = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ'); 
-	  $b = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o'); 
-	  return str_replace($a, $b, $str); 
+	function remove_accent($str)
+	{
+	  $a = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ');
+	  $b = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o');
+	  return str_replace($a, $b, $str);
 	}
 
 	public function createNameLink($name){
-		
+
 		$name_link = strtolower(preg_replace(array('/[^a-zA-Z0-9 -]/', '/[ -]+/', '/^-|-$/'),array('', '-', ''), $this->remove_accent($name)));
 
 		$row = $this->get_itemsEvent(null, null, null,$name_link);
@@ -339,7 +374,7 @@ $resp=$this->db->query( $this->db->prepare(
 			$name 				= isset($data['name']) ? $data['name'] : '';
 
 			$name_link = $this->createNameLink($name);
-			
+
 
 			$results = $wpdb->insert($this->table_events, array(
 				'id_site_fun'   =>  isset($data['siteid']) ? $data['siteid'] : '',
@@ -362,6 +397,30 @@ $resp=$this->db->query( $this->db->prepare(
 	 * Return array with [name] file saved
 	 * @public
 	 */
+
+	 public function uploadFotos($file){
+		 if (!isset($file['qqfile']['name']) || empty($file['qqfile']['name']) || ($file[uploadedfile][size] >20000000)) {
+			return '';
+		}
+//qqfile
+		$target_path 	= ALPAGE_PATH_UPLOADS;
+		$nameFile 		= $this->sanear_string(basename( date("d-m-Y H:i:s").$file['qqfile']['name']));
+		$target_path = $target_path . $nameFile;
+		//mkdir("", 0777);
+
+		if(move_uploaded_file($file['qqfile']['tmp_name'], $target_path)) {
+			$GLOBALS['ruta_foto_temp']=$target_path;
+				return array('success'=> true, "uuid" => $uuid);
+			//$nameFile='';
+		}
+		// var_dump($nameFile);
+		// //var_dump();
+		// die();
+		return array('error'=> 'Could not save uploaded file.' .
+				'The upload was cancelled, or server error encountered');
+
+	 }
+
 	public function uploadFile(){
 
 		if (!isset($_FILES['poster']['name']) || empty($_FILES['poster']['name']) || ($_FILES[uploadedfile][size] >20000000)) {
