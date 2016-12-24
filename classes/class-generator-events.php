@@ -185,7 +185,12 @@ $ruta=ALPAGE_ABSPATH.$file;
 
 public function sendComment($values,$files){
 $imgLink='';
+$comment='';
+if(!empty($values['comment'])){
 $comment=(string)$values['comment'];
+}
+
+
 $user = wp_get_current_user();
 $id_event=$values['event_id'];
 $url=$values['url'];

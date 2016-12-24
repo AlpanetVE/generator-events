@@ -221,10 +221,10 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
              </div>
              <div class="buttons">
                  <div class="qq-upload-button-selector qq-upload-button">
-                     <div>Select your images</div>
+                     <span class="glyphicon glyphicon-camera"> </span>
                  </div>
                  <button type="button" id="trigger-upload" class="btn btn-primary">
-                     <i class="icon-upload icon-white"></i> Upload
+                     <span class="glyphicon glyphicon-upload"></span> Upload
                  </button>
              </div>
              <span class="qq-drop-processing-selector qq-drop-processing">
@@ -352,7 +352,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
             <div class="img-comentario">
               <p>
                 <?php echo cl_image_tag($img, array("alt"=>"sample","width"=>200, "crop"=>"thumb","cloud_name" => "darwin123")) ?>
-              </p>
+              </p> <span> <a href="<?php echo $comentario->img ?>" target="_blank">View full image </a> </span>
             </div>
           <?php endif;?>
               <h5 class="pull-right"> <?php echo $comentario->fecha ?> </h5>
@@ -370,23 +370,27 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
       <div class="col-xs-2">
         <img class="top-timeline-tweet-box-user-image avatar size32" src="https://pbs.twimg.com/profile_images/774341475802968064/qtMQRmhI_normal.jpg" alt="Oscar J. Lopez">
       </div>
-      <div class="">
-          <textarea name="comment" rows="5" cols="40" maxlength="254" placeholder="Your Comment"></textarea>
-            <!-- <div id="fine-uploader-manual-trigger"></div> -->
+      <div class="" style="margin-bottom: 10px;">
+          <textarea name="comment" rows="5" cols="55" maxlength="254" placeholder="Your Comment"></textarea>
+
         </div>
 
-        <p>
-          <div class="btn-submit-comment">
-            <input type="submit" class="btn btn-default btn-md" value="Enviar Comentario">
-          </div>
-        </p>
+
+<!-- <div id="fine-uploader-manual-trigger"></div> -->
         <input type="hidden" name="url" value="<?php echo  $current_url ?>">
         <input type="hidden" name="event_id" value= "<?php echo $value['id'] ?>" >
         <input type="hidden" name="ge_tipo" value="ge_comment">
+          <div id="fine-uploader-manual-trigger"></div>
+          <p>
+            <div class="btn-submit-comment">
+              <input type="submit" class="btn btn-default btn-md" value="Send Comment">
+            </div>
+          </p>
     </form>
+
 	</div>
 
-<div id="fine-uploader-manual-trigger"></div>
+
 					</div>
 					<hr class="simple">
 
@@ -439,8 +443,8 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
         	                },
         	                    validation: {
         	                        allowedExtensions: ['jpeg', 'jpg', 'png', 'gif'],
-        	                         itemLimit: 1
-        	                        // sizeLimit: 2048000 // 50 kB = 50 * 1024 bytes
+        	                         itemLimit: 1,
+        	                         sizeLimit: 2048000 // 50 kB = 50 * 1024 bytes
         	                    },
         	                autoUpload: false,
         	                debug: true

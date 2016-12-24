@@ -1,8 +1,8 @@
 
 #trigger-upload {
     color: white;
-    background-color: #00ABC7;
-    font-size: 14px;
+    background-color: #029A89;
+    font-size: 17px;
     padding: 7px 20px;
     background-image: none;
 }
@@ -13,6 +13,11 @@
 
 #fine-uploader-manual-trigger .qq-upload-button {
     margin-right: 15px;
+    width: 87px;
+    background: #029A89;
+    padding: 0px 0px;
+    height: 39px;
+    font-size: x-large;
 }
 
 #fine-uploader-manual-trigger .buttons {
@@ -26,5 +31,6 @@
 
 .qq-uploader{
   border-radius: 0px;
+  min-height: 170px;
   background-color: transparent;
 }
