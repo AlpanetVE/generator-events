@@ -221,7 +221,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
              </div>
              <div class="buttons">
                  <div class="qq-upload-button-selector qq-upload-button">
-                     <div>Select files</div>
+                     <div>Select your images</div>
                  </div>
                  <button type="button" id="trigger-upload" class="btn btn-primary">
                      <i class="icon-upload icon-white"></i> Upload
@@ -346,6 +346,15 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
               <?php echo $comentario->comentario;?>
             </p>
             </div>
+            <?php if(!empty($comentario->img)):
+                $img=basename($comentario->img);
+               ?>
+            <div class="img-comentario">
+              <p>
+                <?php echo cl_image_tag($img, array("alt"=>"sample","width"=>200, "crop"=>"thumb","cloud_name" => "darwin123")) ?>
+              </p>
+            </div>
+          <?php endif;?>
               <h5 class="pull-right"> <?php echo $comentario->fecha ?> </h5>
         </div>
     </div>

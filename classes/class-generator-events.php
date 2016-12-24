@@ -282,7 +282,7 @@ $resp=$this->db->query( $this->db->prepare(
 	public function getComentsEvent($id){
 		$user_table=$this->db->prefix."users";
 
-	$sqlSelect="SELECT C.comment AS comentario, U.display_name AS nic, U.ID as id, C.date_time as fecha
+	$sqlSelect="SELECT C.comment AS comentario, C.img_link as img, U.display_name AS nic, U.ID as id, C.date_time as fecha
  FROM $this->table_user_event_comment C
  INNER JOIN $user_table	 U ON C.user_id=U.ID
  WHERE C.status=1 AND C.id_event=$id ORDER BY C.date_time DESC";
