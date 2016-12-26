@@ -10,14 +10,20 @@ add_shortcode( 'alpage_detail_site_shortchode', 'alpage_detail_site_shortchode' 
 
 /*------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------*/
-add_shortcode( 'star-rating', 'rating' );
-add_action( 'wp_enqueue_scripts', 'function_rating' );
 
-wp_register_style('generateFrontEvent', STAR_URL . 'css/generateFrontEvent.css', array(), '1', 'all');
 
 require_once( ABSPATH . "wp-includes/pluggable.php" );
 
-function function_rating() {
+function registerFileFront(){
+	wp_register_style('generateFrontEventCss', STAR_URL . 'css/generateFrontEvent.css', array(), '1', 'all');
+	wp_register_script('generateFrontEventJs', STAR_URL . 'js/site-event.js',array('jquery'));
+
+	wp_enqueue_style('generateFrontEventCss');
+	wp_enqueue_script('generateFrontEventJs');
+
+}
+function function_rating() {	
+
   wp_register_script('rating_1', STAR_URL . 'js/jquery.MetaData.js',array('jquery'));
   wp_register_script('rating_2', STAR_URL . 'js/jquery.rating.js',array('jquery'));
   wp_register_script('rating_3', STAR_URL . 'js/send_rating.js',array('jquery'));
@@ -52,8 +58,6 @@ function rating( $atts ) {
 	$res=$respuesta['rating'];
 	$url_ajax=ALPAGE_URL.'ajax_vote.php';
 
-
-
 	ob_start();
 	?>
 	<form id="form-star" name="api-select">
@@ -79,19 +83,22 @@ function rating( $atts ) {
 function alpage_detail_site_shortchode( $atts ) { // New function parameter $content is added!
 	$result	= '';
 
-
 	extract( shortcode_atts( array(
 	  'title' => 'Title',
 	  'no_of_post' => '8',
 	  'event_look' => 'simple',
-   ), $atts ) );
+	), $atts ) );
 
-   	wp_enqueue_style('generateFrontEvent');
+	registerFileFront();
 
-   	if (isset($_GET['nameSite']) && !empty($_GET['nameSite'])) {
-   		$name_link			= $_GET['nameSite'];
+	if (isset($_GET['nameSite']) && !empty($_GET['nameSite'])) {
+		$name_link			= $_GET['nameSite'];
 		$GeneratorEvents 	= new GeneratorEvents();
-		$EventArray 		= $GeneratorEvents->get_itemsEvent(null,null,null,null,$name_link);
+		$start = '1';
+		$per_page 	= '4';
+
+		$EventArray 		= $GeneratorEvents->get_itemsEvent(null,null,null,null,$name_link, 'news', 'se.`date` asc');
+		$EventArraBefore	= $GeneratorEvents->get_itemsEvent($start,$per_page,null,null,$name_link, 'before', 'se.`date` desc');
 
 
 		$value = $EventArray[0];
@@ -100,8 +107,9 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 		$Ttime = strtoupper(date("g:i a",strtotime($value['closed_hour'])));
 
 		global $wp;
-		$current_url = home_url(add_query_arg(array(),$wp->request)).'?nameSite='.$_GET['nameSite'] ;
+		$current_url = home_url(add_query_arg(array(),$wp->request)).'?nameSite='.$_GET['nameSite'];
 
+		
 		 ?>
 		<script type="text/javascript">
 			var x = document.getElementsByClassName("rock_heading");
@@ -109,49 +117,49 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 		</script>
 		<?php
 		ob_start();
-
-			?>
+		?>
 
 		<div class="row row-centered center">
 			<div class="col-xs-12 col-md-9 brightd site-event-main">
 
-
-				
-				<?php if (!empty($EventArray)){?>
-					<div class="title-site-event">
-						Events
-					</div>
-					<?php
-					foreach ($EventArray as $key => $Event) {						
-						$thumb_w = '370';
-						$thumb_h = '148';
-
-
-						if ($Event['poster']){
-							$src = ALPAGE_URL_UPLOADS.$Event['poster'];
-						}else{
-							$src = ALPAGE_URL.'images/no_image.jpg';
-						}
-						$image = aq_resize($src, $thumb_w, $thumb_h, true);
-
-						?>
-						<div class="site-event-cont">
-							<a href="<?php echo ALPAGE_URL_EVENT.'?nameEvent='.$Event['name_link'];?>">
-								<img class="banner-event" src="<?php echo esc_url($image);?>" alt="" />
-							</a>
-							<div class="rock_main_event_image_overlay">
-							</div>
+				<?php if (!empty($EventArray)){ ?>
+						<div class="title-site-event">
+							Events
 						</div>
+						<?php
+						foreach ($EventArray as $key => $Event) {
+							$thumb_w = '370';
+							$thumb_h = '148';
+
+							if ($Event['poster']){
+								$src = ALPAGE_URL_UPLOADS.$Event['poster'];
+							}else{
+								$src = ALPAGE_URL.'images/no_image.jpg';
+							}
+							$image = aq_resize($src, $thumb_w, $thumb_h, true);
+
+							?>
+							<div class="site-event-cont">
+								<a href="<?php echo ALPAGE_URL_EVENT.'?nameEvent='.$Event['name_link'];?>">
+									<img class="banner-event" src="<?php echo esc_url($image);?>" alt="" />
+								</a>
+								<div class="rock_main_event_image_overlay">
+								</div>
+							</div>
 					<?php }
 					} 	?>
 				
 
-				<?php if (!empty($desc)){ ?>
-					<p class="pmargin"><?php echo esc_attr($desc);?></p>			
+				<?php
+				if (!empty($EventArraBefore)){
+				?>
+					<hr class="simple">
+					<div id="cont-event-before">
+						<!--here are the events-->
+					</div>
+					<input type="button" class="see-more btn-default" value="See before" id="see-more-event" data-name='<?php echo $name_link ;?>' data-start='<?php echo $start ;?>' data-name='<?php echo $per_page ;?>'>
 				<?php } ?>
-
 				<hr>
-
 
 			</div>
 			<div class="col-xs-12 col-md-3 ">
@@ -181,8 +189,11 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 				?>
 			</div>
 		</div>
-	  		<?php
+		<?php
+		$result = ob_get_clean();
 	}
+
+	return $result;
 }
 
 function alpage_detail_event_shortchode( $atts ) { // New function parameter $content is added!
@@ -192,9 +203,10 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 	  'event_look' => 'simple',
    ), $atts ) );
 
-   	$result	= '';
-   	wp_enqueue_style('generateFrontEvent');
-   	if (isset($_GET['nameEvent']) && !empty($_GET['nameEvent'])) {
+	$result	= '';
+
+	registerFileFront();
+	if (isset($_GET['nameEvent']) && !empty($_GET['nameEvent'])) {
 
 		$GeneratorEvents = new GeneratorEvents();
 		$EventArray = $GeneratorEvents-> get_itemsEvent(null,null,null, $_GET['nameEvent']);
