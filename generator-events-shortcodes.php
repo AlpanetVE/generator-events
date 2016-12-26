@@ -121,7 +121,7 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 
 		<div class="row row-centered center">
 			<div class="col-xs-12 col-md-9 brightd site-event-main">
-
+				
 				<?php if (!empty($EventArray)){ ?>
 						<div class="title-site-event">
 							Events
@@ -139,13 +139,16 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 							$image = aq_resize($src, $thumb_w, $thumb_h, true);
 
 							?>
-							<div class="site-event-cont">
-								<a href="<?php echo ALPAGE_URL_EVENT.'?nameEvent='.$Event['name_link'];?>">
+
+
+							<a href="<?php echo ALPAGE_URL_EVENT.'?nameEvent='.$Event['name_link'];?>">
+								<div class="site-event-cont rock_main_event_image">								
 									<img class="banner-event" src="<?php echo esc_url($image);?>" alt="" />
-								</a>
-								<div class="rock_main_event_image_overlay">
+									<div class="rock_main_event_image_overlay">
+										<span><?php echo $Event['name']; ?></span>
+									</div>
 								</div>
-							</div>
+							</a>
 					<?php }
 					} 	?>
 

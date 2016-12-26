@@ -37,13 +37,14 @@ if ($_POST['action']=='getEventBefore') {
 			}
 			$image = aq_resize($src, $thumb_w, $thumb_h, true);
 			?>
-			<div class="site-event-cont">
-				<a href="<?php echo ALPAGE_URL_EVENT.'?nameEvent='.$Event['name_link'];?>">
-					<img class="banner-event" src="<?php echo esc_url($image);?>" alt="" />
-				</a>
-				<div class="rock_main_event_image_overlay">
+			<a href="<?php echo ALPAGE_URL_EVENT.'?nameEvent='.$Event['name_link'];?>">
+				<div class="rock_main_event_image site-event-cont">				
+					<img class="banner-event" src="<?php echo esc_url($image);?>" alt="" />				
+					<div class="rock_main_event_image_overlay">
+						<span><?php echo $Event['name']; ?></span>
+					</div>
 				</div>
-			</div>
+			</a>
 	<?php }
 
 	$html = ob_get_clean();
