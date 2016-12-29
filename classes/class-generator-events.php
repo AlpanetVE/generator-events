@@ -154,17 +154,18 @@ class GeneratorEvents {
 	}
 
 	public function process_data($values,$files){
-	switch ($values['ge_tipo']) {
-		case 'ge_comment':
-			$this->sendComment($values,$files);
-			break;
+		switch ($values['ge_tipo']) {
+			case 'ge_comment':
+				$this->sendComment($values,$files);
+				break;
 
-		default:
-			# code...
-			break;
+			default:
+				# code...
+				break;
+		}
 	}
 
-}
+
 
 public function sendCloudinary($file){
 	\Cloudinary::config(array(
@@ -228,7 +229,8 @@ $resp=$this->db->query( $this->db->prepare(
 		//$url = home_url( '/notification' );
 	//}
 
-}
+
+	}
 
 	public function get_page_itemsSites($curr_page, $per_page){
 		$start = (($curr_page-1)*$per_page);
@@ -236,7 +238,7 @@ $resp=$this->db->query( $this->db->prepare(
 		return $this->db->get_results( $query, ARRAY_A );
 	}
 
-	public function get_itemsEvent($curr_page=null, $per_page=null, $idEvent=null, $name_link=null, $name_link_site=null){
+	public function get_itemsEvent($curr_page=null, $per_page=null, $idEvent=null, $name_link=null, $name_link_site=null, $date=null, $order=null){
 		$start = (($curr_page-1)*$per_page);
 		$query = "SELECT
 					se.id,
@@ -273,12 +275,26 @@ $resp=$this->db->query( $this->db->prepare(
 						$query.=" and sf.name_link='$name_link_site'";
 					}
 
-					$query.="  ORDER BY se.id DESC";
+					if ($date=='news') {
+						$query.=" and se.`date` > SUBDATE(CURDATE(),1)";
+					}
+					if ($date=='before') {
+						$query.=" and se.`date` <= SUBDATE(CURDATE(),1)";
+					}
+
+
+					
+					if (!empty($order)) {
+						$query.="  ORDER BY '$order'";
+					}
+					else{
+						$query.="  ORDER BY se.id DESC";
+					}
+					
 
 					if (!empty($per_page)) {
 						$query.=" LIMIT $start, $per_page";
 					}
-//var_dump($query);
 		return $this->db->get_results( $query, ARRAY_A );
 	}
 
