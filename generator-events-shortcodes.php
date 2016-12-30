@@ -22,7 +22,7 @@ function registerFileFront(){
 	wp_enqueue_script('generateFrontEventJs');
 
 }
-function function_rating() {	
+function function_rating() {
 
   wp_register_script('rating_1', STAR_URL . 'js/jquery.MetaData.js',array('jquery'));
   wp_register_script('rating_2', STAR_URL . 'js/jquery.rating.js',array('jquery'));
@@ -61,7 +61,7 @@ function rating( $atts ) {
 	ob_start();
 	?>
 	<form id="form-star" name="api-select">
-		<input type="radio" class="star" name="api-select-test" value="1" <?php echo ($res==1) ?  "checked='checked'": "";?>/>
+		<input type="radio" class="star required" name="api-select-test" value="1" <?php echo ($res==1) ?  "checked='checked'": "";?>/>
 		<input type="radio" class="star" name="api-select-test" value="2" <?php echo ($res==2) ?  "checked='checked'": ""; ?>/>
 		<input type="radio" class="star" name="api-select-test" value="3" <?php echo ($res==3) ?  "checked='checked'": ""; ?>/>
 		<input type="radio" class="star" name="api-select-test" value="5" <?php echo ($res==4) ?  "checked='checked'": ""; ?>/>
@@ -109,7 +109,7 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 		global $wp;
 		$current_url = home_url(add_query_arg(array(),$wp->request)).'?nameSite='.$_GET['nameSite'];
 
-		
+
 		 ?>
 		<script type="text/javascript">
 			var x = document.getElementsByClassName("rock_heading");
@@ -121,7 +121,7 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 
 		<div class="row row-centered center">
 			<div class="col-xs-12 col-md-9 brightd site-event-main">
-				
+
 				<?php if (!empty($EventArray)){ ?>
 						<div class="title-site-event">
 							Events
@@ -142,7 +142,7 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 
 
 							<a href="<?php echo ALPAGE_URL_EVENT.'?nameEvent='.$Event['name_link'];?>">
-								<div class="site-event-cont rock_main_event_image">								
+								<div class="site-event-cont rock_main_event_image">
 									<img class="banner-event" src="<?php echo esc_url($image);?>" alt="" />
 									<div class="rock_main_event_image_overlay">
 										<span><?php echo $Event['name']; ?></span>
@@ -214,6 +214,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 		$GeneratorEvents = new GeneratorEvents();
 		$EventArray = $GeneratorEvents-> get_itemsEvent(null,null,null, $_GET['nameEvent']);
 
+		$user = wp_get_current_user();
 
 		$comentariosArray= $GeneratorEvents->getComentsEvent($EventArray[0]['id']);
 		$value = $EventArray[0];
@@ -341,7 +342,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 					?>
 
 					<hr>
-<?php if(is_user_logged_in()){ ?>
+
 <div class="col-xs-12 col-md-9 col-lg-12 ">
 
 <?php  foreach($comentariosArray as $comentario): ?>
@@ -378,12 +379,21 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 
       <?php endforeach; ?>
 
+<?php if(!is_user_logged_in()) { ?>
+	<h3>Would you like to comment or post a photo? </h3>
+	<p>
+		Login with:
+	</p>
+	<?php do_action('oa_social_login'); }  ?>
+
+<?php if(is_user_logged_in()){ ?>
 						<div class="row">
               <h1> Leave a Comment</h1>
 
     <form class="form-coments" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="post">
       <div class="col-xs-2">
-        <img class="top-timeline-tweet-box-user-image avatar size32" src="https://pbs.twimg.com/profile_images/774341475802968064/qtMQRmhI_normal.jpg" alt="Oscar J. Lopez">
+				<?php echo get_avatar($user->ID,64); ?>
+				<!-- <img class="top-timeline-tweet-box-user-image avatar size32" src="https://pbs.twimg.com/profile_images/774341475802968064/qtMQRmhI_normal.jpg" alt="Oscar J. Lopez"> -->
       </div>
       <div class="" style="margin-bottom: 10px;">
           <textarea name="comment" rows="5" cols="55" maxlength="254" placeholder="Your Comment"></textarea>
@@ -404,12 +414,12 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
     </form>
 
 	</div>
-
+		<?php } ?>
 
 					</div>
 					<hr class="simple">
 
-					<?php } ?>
+
 
 
 	  			</div>
