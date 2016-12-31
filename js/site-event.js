@@ -2,6 +2,16 @@ jQuery(document).ready(function($) {
 
   $(document).on( "click", "#see-more-event", function(e) {
     var BtnSeeMore  = $(this);
+
+    sendAjax(BtnSeeMore);
+
+  });
+
+});
+
+function sendAjax(BtnSeeMore){
+
+
     BtnSeeMore.prop('disabled', true);
 
     data={
@@ -10,7 +20,8 @@ jQuery(document).ready(function($) {
         start:BtnSeeMore.data('start')
       };
 
-    $.ajax({
+
+     $.ajax({
       url:"../wp-content/plugins/generator-events/ajax_ge.php",
       data: data,
       type:"POST",
@@ -35,6 +46,4 @@ jQuery(document).ready(function($) {
         BtnSeeMore.prop('disabled', false);
       }
     });
-  });
-
-});
+  }

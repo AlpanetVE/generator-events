@@ -28,6 +28,15 @@
 .brightd{
 	border-right: 1px solid #ddd;
 }
+div#will-be-event > span {
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 34px;
+}
+div#will-be-event {
+    min-height: 250px;
+    display: table;
+}
 hr.simple{
 	float: left;
 	width: 100%;

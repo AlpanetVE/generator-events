@@ -238,6 +238,38 @@ $resp=$this->db->query( $this->db->prepare(
 		return $this->db->get_results( $query, ARRAY_A );
 	}
 
+	public function get_itemsSite($curr_page=null, $per_page=null,$order=null, $id=null, $name_link=null){
+		$start = (($curr_page-1)*$per_page);
+
+		$query = "SELECT
+		sf.id,
+		sf.`name`,
+		sf.addres,
+		sf.latitude,
+		sf.longitude,
+		sf.rating,
+		sf.environment,
+		sf.opening_hour,
+		sf.closed_hour,
+		sf.name_link
+		FROM
+		$this->table_sites AS sf
+		WHERE 1";
+
+		if (!empty($id)) {
+			$query.=" and sf.id='$id'";
+		}
+		if (!empty($name_link)) {
+			$query.=" and sf.name_link='$name_link'";
+		}
+
+		if (!empty($per_page)) {
+			$query.=" LIMIT $start, $per_page";
+		}
+
+		return $this->db->get_results( $query, ARRAY_A );
+	}
+
 	public function get_itemsEvent($curr_page=null, $per_page=null, $idEvent=null, $name_link=null, $name_link_site=null, $date=null, $order=null){
 		$start = (($curr_page-1)*$per_page);
 		$query = "SELECT
@@ -295,6 +327,7 @@ $resp=$this->db->query( $this->db->prepare(
 					if (!empty($per_page)) {
 						$query.=" LIMIT $start, $per_page";
 					}
+
 		return $this->db->get_results( $query, ARRAY_A );
 	}
 
@@ -646,5 +679,10 @@ $resp=$this->db->query( $this->db->prepare(
 		$query= "SELECT rating FROM $this->table_user_event where user_id = $user_id and id_event =$id_event ;";
 
 		return $this->db->get_row( $query, ARRAY_A );
+	}
+	public function redirect_user($dir) {
+	    $return_url = esc_url( home_url($dir) );
+	    wp_redirect( $return_url );
+	    exit;
 	}
 }

@@ -97,30 +97,64 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 		$start = '1';
 		$per_page 	= '4';
 
-		$EventArray 		= $GeneratorEvents->get_itemsEvent(null,null,null,null,$name_link, 'news', 'se.`date` asc');
+		$SiteArray			= $GeneratorEvents->get_itemsSite(null, null,null,null,$name_link);
+		if (!empty($SiteArray[0])) {
+		
+
+		$value 				= $SiteArray[0];
+
+
+		$EventArray 		= $GeneratorEvents->get_itemsEvent(null,null,null,null,$name_link, 'news', 'se.`date` asc');	
 		$EventArraBefore	= $GeneratorEvents->get_itemsEvent($start,$per_page,null,null,$name_link, 'before', 'se.`date` desc');
 
+		if (empty($EventArray)) {
+			//no hay futuros eventos
+			//mostrar pasados eventos
+		}
 
-		$value = $EventArray[0];
+		if (empty($EventArraBefore)) {
+			//no hay pasados eventos
+			//no mostrar btn de eventos pasados
+			//si no hay futuros eventos, mostrar los pasados eventos
+		}
+
+		if (empty($EventArray) && empty($EventArraBefore)) {
+			//no hay ni pasados ni futuros eventos
+		    //Proximamente, nuevos eventos
+		}
 
 		$Ftime = strtoupper(date("g:i a",strtotime($value['opening_hour'])));
 		$Ttime = strtoupper(date("g:i a",strtotime($value['closed_hour'])));
-
-		global $wp;
-		$current_url = home_url(add_query_arg(array(),$wp->request)).'?nameSite='.$_GET['nameSite'];
 
 
 		 ?>
 		<script type="text/javascript">
 			var x = document.getElementsByClassName("rock_heading");
-			x[0].innerHTML = '<h1><?php echo $value['name_site'];?></h1>';
+			x[0].innerHTML = '<h1><?php echo $value['name'];?></h1>';
+
+
+		jQuery(document).ready(function($) {
+			<?php 
+			if (empty($EventArray) && !empty($EventArraBefore)) {
+				echo "setTimeout(function(){ jQuery('#see-more-event').click() }, 1000);";
+			}
+			if (empty($EventArray) && empty($EventArraBefore)) {
+				echo "jQuery('#will-be-event').show();
+					jQuery('#site-event-main').hide();";
+			}
+			?>
+		});
+
 		</script>
 		<?php
 		ob_start();
 		?>
 
 		<div class="row row-centered center">
-			<div class="col-xs-12 col-md-9 brightd site-event-main">
+			<div id="will-be-event" class="col-xs-12 col-md-9 brightd site-event-main" style="">
+  				<span>There aren't events yet.</span>
+			</div>
+			<div id="site-event-main" class="col-xs-12 col-md-9 brightd site-event-main">
 
 				<?php if (!empty($EventArray)){ ?>
 						<div class="title-site-event">
@@ -134,7 +168,7 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 							if ($Event['poster']){
 								$src = ALPAGE_URL_UPLOADS.$Event['poster'];
 							}else{
-								$src = ALPAGE_URL.'images/no_image.jpg';
+								$src = ALPAGE_URL.'images/no_image_350x140.jpg';
 							}
 							$image = aq_resize($src, $thumb_w, $thumb_h, true);
 
@@ -166,14 +200,14 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 
 			</div>
 			<div class="col-xs-12 col-md-3 ">
-				<div style="margin: 20px;">
-					<?php echo $value['name'];
-
-					function_rating();
-					echo rating ( $arrayName = array('id_event' =>  $value['id'] ) ); ?>
+				<div style="margin: 10px;font-size: 19px;">
+					<?php echo $value['name'];?>
 				</div>
 
 				<?php
+				function_rating();
+					echo rating ( $arrayName = array('id_event' =>  $value['id'] ) ); 
+
 				if (!empty($Ftime)) {
 					echo 'Open: '.$Ftime.'<br>';
 				}
@@ -193,6 +227,14 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 			</div>
 		</div>
 		<?php
+
+
+
+		}else{
+			$SiteArray			= $GeneratorEvents->redirect_user('');
+		}
+
+
 		$result = ob_get_clean();
 	}
 
