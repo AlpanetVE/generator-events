@@ -151,7 +151,7 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 		?>
 
 		<div class="row row-centered center">
-			<div id="will-be-event" class="col-xs-12 col-md-9 brightd site-event-main" style="">
+			<div id="will-be-event" class="col-xs-12 col-md-9 brightd site-event-main" style="display: none;">
   				<span>There aren't events yet.</span>
 			</div>
 			<div id="site-event-main" class="col-xs-12 col-md-9 brightd site-event-main">
@@ -193,7 +193,7 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 					<div id="cont-event-before">
 						<!--here are the events-->
 					</div>
-					<input type="button" class="see-more btn-default" value="See before" id="see-more-event" data-name='<?php echo $name_link ;?>' data-start='<?php echo $start ;?>' data-name='<?php echo $per_page ;?>'>
+					<input disabled="disabled" type="button" class="see-more btn-default" value="See before" id="see-more-event" data-name='<?php echo $name_link ;?>' data-start='<?php echo $start ;?>' data-name='<?php echo $per_page ;?>'>
 
 				<?php } ?>
 				<hr>

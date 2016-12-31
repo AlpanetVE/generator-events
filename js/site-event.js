@@ -1,4 +1,5 @@
 jQuery(document).ready(function($) {
+  $("#see-more-event").prop('disabled', false);
 
   $(document).on( "click", "#see-more-event", function(e) {
     var BtnSeeMore  = $(this);
@@ -7,9 +8,8 @@ jQuery(document).ready(function($) {
 
   });
 
-});
 
-function sendAjax(BtnSeeMore){
+  function sendAjax(BtnSeeMore){
 
 
     BtnSeeMore.prop('disabled', true);
@@ -47,3 +47,8 @@ function sendAjax(BtnSeeMore){
       }
     });
   }
+
+  
+
+});
+
