@@ -1,12 +1,14 @@
 <?php
 require_once('../../../wp-load.php');
+require_once('define.php');
+require_once('classes/class-generator-events.php');
 global $wpdb;
 
 $table_user_event = $wpdb->prefix."alpage_user_event";
 
 $user = wp_get_current_user();
 
-
+$GeneratorEvents 	= new GeneratorEvents();
 
 
 if(isset($_POST['api-select-test'])){
@@ -33,6 +35,9 @@ echo $results;
 				));
 	echo $results;
      }
+
+$GeneratorEvents->setRankingEvent($id_event);
+
 }else{
 
   echo 'Error en el POST';

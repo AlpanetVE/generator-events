@@ -7,7 +7,7 @@ add_shortcode( 'alpage_detail_event_shortchode', 'alpage_detail_event_shortchode
 
 add_shortcode( 'alpage_detail_site_shortchode', 'alpage_detail_site_shortchode' );
 
-
+add_action( 'wp_enqueue_scripts', 'fine_uploader_scripts' );
 /*------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------*/
 
@@ -21,7 +21,26 @@ function registerFileFront(){
 	wp_enqueue_style('generateFrontEventCss');
 	wp_enqueue_script('generateFrontEventJs');
 
+
+  wp_enqueue_script('script-fine-uploader');
+  wp_enqueue_style('fine-uploader');
+  wp_enqueue_style('custom-uploader');
+
 }
+
+function fine_uploader_scripts(){
+	wp_register_style('fine-uploader',STAR_URL .'css/fine-uploader-new.css',array(),'1','all');
+	wp_register_style('custom-uploader',STAR_URL .'css/custom-uploader.css',array(),'1','all');
+	wp_register_script('script-fine-uploader', STAR_URL . 'js/fine-uploader.js');
+
+
+	wp_enqueue_script('script-fine-uploader');
+	wp_enqueue_style('fine-uploader');
+	wp_enqueue_style('custom-uploader');
+
+}
+
+
 function function_rating() {
 
   wp_register_script('rating_1', STAR_URL . 'js/jquery.MetaData.js',array('jquery'));
@@ -35,14 +54,7 @@ function function_rating() {
   wp_enqueue_style('rating_styles');
   wp_enqueue_style('rating_styles_2');
 
-  //Incluir styes y scripts de fineuploader
-	  wp_register_style('fine-uploader',ALPAGE_URL .'css/fine-uploader-new.css',array(),'1','all');
-	  wp_register_style('custom-uploader',ALPAGE_URL .'css/custom-uploader.css',array(),'1','all');
-	  wp_register_script('script-fine-uploader', ALPAGE_URL . 'js/fine-uploader.js');
 
-	  wp_enqueue_script('script-fine-uploader');
-	  wp_enqueue_style('fine-uploader');
-	  wp_enqueue_style('custom-uploader');
 }
 function rating( $atts ) {
 
@@ -99,12 +111,12 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 
 		$SiteArray			= $GeneratorEvents->get_itemsSite(null, null,null,null,$name_link);
 		if (!empty($SiteArray[0])) {
-		
+
 
 		$value 				= $SiteArray[0];
 
 
-		$EventArray 		= $GeneratorEvents->get_itemsEvent(null,null,null,null,$name_link, 'news', 'se.`date` asc');	
+		$EventArray 		= $GeneratorEvents->get_itemsEvent(null,null,null,null,$name_link, 'news', 'se.`date` asc');
 		$EventArraBefore	= $GeneratorEvents->get_itemsEvent($start,$per_page,null,null,$name_link, 'before', 'se.`date` desc');
 
 		if (empty($EventArray)) {
@@ -134,7 +146,7 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 
 
 		jQuery(document).ready(function($) {
-			<?php 
+			<?php
 			if (empty($EventArray) && !empty($EventArraBefore)) {
 				echo "setTimeout(function(){ jQuery('#see-more-event').click() }, 1000);";
 			}
@@ -206,7 +218,7 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 
 				<?php
 				function_rating();
-					echo rating ( $arrayName = array('id_event' =>  $value['id'] ) ); 
+					echo rating ( $arrayName = array('id_event' =>  $value['id'] ) );
 
 				if (!empty($Ftime)) {
 					echo 'Open: '.$Ftime.'<br>';
@@ -426,7 +438,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 	<p>
 		Login with:
 	</p>
-	<?php do_action('oa_social_login'); }  ?>
+	<?php do_action('oa_social_login');  }  ?>
 
 <?php if(is_user_logged_in()){ ?>
 						<div class="row">
@@ -443,11 +455,11 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
         </div>
 
 
-<!-- <div id="fine-uploader-manual-trigger"></div> -->
+<div id="fine-uploader-manual-trigger"></div>
         <input type="hidden" name="url" value="<?php echo  $current_url ?>">
         <input type="hidden" name="event_id" value= "<?php echo $value['id'] ?>" >
         <input type="hidden" name="ge_tipo" value="ge_comment">
-          <div id="fine-uploader-manual-trigger"></div>
+          <!-- <div id="fine-uploader-manual-trigger"></div> -->
           <p>
             <div class="btn-submit-comment">
               <input type="submit" class="btn btn-default btn-md" value="Send Comment">

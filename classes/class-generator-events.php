@@ -232,6 +232,48 @@ $resp=$this->db->query( $this->db->prepare(
 
 	}
 
+public function setRankingEvent($id_event){
+	$sql= "SELECT count(*) as resul, sum(rating) as total
+	FROM $this->table_user_event where id_event=$id_event; ";
+	$data=$this->db->get_results( $sql, ARRAY_A );
+
+	$promedio = $data[0]['total'] / $data[0]['resul'];
+	$promRank = ceil($promedio);
+
+
+$sqlUpdate="UPDATE $this->table_events SET rating = $promRank WHERE id = $id_event ";
+
+
+$results=$this->db->query($sqlUpdate);
+
+
+//var_dump($results);
+$cons="SELECT id_site_fun FROM $this->table_events WHERE id=$id_event;";
+
+$id_site=$this->db->get_var($cons);
+
+return $this->setRankingSite($id_site);
+
+}
+
+
+
+public function setRankingSite($id_site){
+$sql="SELECT count(*) as resul, sum(rating) as total FROM $this->table_events where id_site_fun=$id_site;";
+$data=$this->db->get_results( $sql, ARRAY_A );
+
+$promedio = $data[0]['total'] / $data[0]['resul'];
+$promRank = ceil($promedio);
+
+$results=$this->db->update($this->table_sites,array(
+			'rating' =>$promRank),
+				array(
+					'id'=>$id_site
+				));
+
+	return $results;
+}
+
 	public function get_page_itemsSites($curr_page, $per_page){
 		$start = (($curr_page-1)*$per_page);
 		$query = "SELECT * FROM $this->table_sites ORDER BY id DESC LIMIT $start, $per_page";
@@ -315,14 +357,14 @@ $resp=$this->db->query( $this->db->prepare(
 					}
 
 
-					
+
 					if (!empty($order)) {
 						$query.="  ORDER BY '$order'";
 					}
 					else{
 						$query.="  ORDER BY se.id DESC";
 					}
-					
+
 
 					if (!empty($per_page)) {
 						$query.=" LIMIT $start, $per_page";
