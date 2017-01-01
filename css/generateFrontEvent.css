@@ -15,6 +15,16 @@
 	font-size: 30px;
 	margin-left: 1px;
 }
+.tittle-right{
+	margin: 10px;
+	font-size: 19px;
+}
+.point-stars form{
+	margin: 10px 0px 15px 0px;
+}
+.point-stars form > span {
+	display: inline-block;
+}
 .img-add-photo input{
 	position: absolute;
 	top: 0;

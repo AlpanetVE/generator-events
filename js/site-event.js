@@ -1,21 +1,19 @@
 jQuery(document).ready(function($) {
-  $("#see-more-event").prop('disabled', false);
+  $(".see-more").prop('disabled', false);
+
 
   $(document).on( "click", "#see-more-event", function(e) {
     var BtnSeeMore  = $(this);
-
     sendAjax(BtnSeeMore);
-
   });
 
 
   function sendAjax(BtnSeeMore){
 
-
     BtnSeeMore.prop('disabled', true);
 
     data={
-        action:'getEventBefore',
+        action:BtnSeeMore.data('action'),
         name_link:BtnSeeMore.data('name'),
         start:BtnSeeMore.data('start')
       };

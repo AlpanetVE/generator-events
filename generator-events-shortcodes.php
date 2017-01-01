@@ -205,20 +205,23 @@ function alpage_detail_site_shortchode( $atts ) { // New function parameter $con
 					<div id="cont-event-before">
 						<!--here are the events-->
 					</div>
-					<input disabled="disabled" type="button" class="see-more btn-default" value="See before" id="see-more-event" data-name='<?php echo $name_link ;?>' data-start='<?php echo $start ;?>' data-name='<?php echo $per_page ;?>'>
+					<input disabled="disabled" type="button" class="see-more btn-default" value="See before" id="see-more-event" data-name='<?php echo $name_link ;?>' data-start='<?php echo $start ;?>' data-action="getEventBefore">
 
 				<?php } ?>
 				<hr>
 
 			</div>
 			<div class="col-xs-12 col-md-3 ">
-				<div style="margin: 10px;font-size: 19px;">
+				<div class="tittle-right" >
 					<?php echo $value['name'];?>
 				</div>
-
-				<?php
-				function_rating();
+				<div class="point-stars">
+					<?php
+					function_rating();
 					echo rating ( $arrayName = array('id_event' =>  $value['id'] ) );
+					?>
+				</div>
+				<?php
 
 				if (!empty($Ftime)) {
 					echo 'Open: '.$Ftime.'<br>';
@@ -262,16 +265,21 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 
 	$result	= '';
 
+	$GeneratorEvents = new GeneratorEvents();
 	registerFileFront();
+
 	if (isset($_GET['nameEvent']) && !empty($_GET['nameEvent'])) {
 
-		$GeneratorEvents = new GeneratorEvents();
 		$EventArray = $GeneratorEvents-> get_itemsEvent(null,null,null, $_GET['nameEvent']);
+		$value = $EventArray[0];
+
+		if (!empty($value)) {
+
 
 		$user = wp_get_current_user();
 
 		$comentariosArray= $GeneratorEvents->getComentsEvent($EventArray[0]['id']);
-		$value = $EventArray[0];
+
 
 		global $wp;
 		$current_url = home_url(add_query_arg(array(),$wp->request)).'?nameEvent='.$_GET['nameEvent'] ;
@@ -478,11 +486,17 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 
 	  			</div>
 	  			<div class="col-xs-12 col-md-3 ">
-		  			<div style="margin: 20px;"><?php echo $value['name_site'];
-
-		  			function_rating();
-		  			echo rating ( $arrayName = array('id_event' =>  $value['id'] ) ); ?>
-		  			</div>
+	  				<div class="tittle-right" >
+						<a href="<?php echo ALPAGE_URL_SITE.'?nameSite='.$value['site_link'];?>">
+							<?php echo $value['name_site'];?>
+						</a>
+					</div>
+					<div class="point-stars">
+						<?php
+						function_rating();
+						echo rating ( $arrayName = array('id_event' =>  $value['id'] ) );
+						?>
+					</div>
 
 		  			<?php
 		  			if (!empty($date)) {
@@ -538,8 +552,12 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 			<?php
 			$result = ob_get_clean();
 
-   	}else{
+		}else{
+			$GeneratorEvents->redirect_user('');
+		}
 
+   	}else{
+   		$GeneratorEvents->redirect_user('/events');
    	}
 
 
@@ -558,6 +576,8 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 	  'no_of_post' => '8',
 	  'event_look' => 'simple',
    ), $atts ) );
+
+   registerFileFront();
 
    global $post;
    $i = 0;
@@ -585,7 +605,25 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 
 
 		$GeneratorEvents = new GeneratorEvents();
-		$EventArray = $GeneratorEvents-> get_itemsEvent(1,6);
+		$start = '1';
+		$per_page 	= '4';
+
+		$EventArray 		= $GeneratorEvents->get_itemsEvent(null,null,null,null,null, 'news', 'se.`date` asc');
+		$EventArraBefore	= $GeneratorEvents->get_itemsEvent($start,$per_page,null,null,null, 'before', 'se.`date` desc');
+
+
+
+		?>
+		<script type="text/javascript">
+		jQuery(document).ready(function($) {
+			<?php
+			if (empty($EventArray) && !empty($EventArraBefore)) {
+				echo "setTimeout(function(){ jQuery('#see-more-event').click() }, 1000);";
+			}
+			?>
+		});
+		</script>
+		<?php
 
 
 		if(!empty($EventArray)):
@@ -623,9 +661,6 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 				$siteName = $value['name_site'];
 
 				$name_link =  $value['name_link'];
-
-				//$loc =  get_post_meta( $post->ID, 'rockon_event_sysloaction', true );
-				$map =  get_post_meta( $post->ID, 'rockon_event_syscomma', true );
 
 				global $rockon_data;
 				if(isset($rockon_data['rockon_language']))
@@ -665,7 +700,20 @@ function alpage_events_shortchode_func( $atts ) { // New function parameter $con
 			}
 
 		}
+
 		endif;
+
+		if (!empty($EventArraBefore)){
+		$result .= '<hr class="simple">
+			<div id="cont-event-before">
+				<!--here are the events-->
+			</div>
+			<div class="text-center col-xs-12">
+				<input disabled="disabled" type="button" class="see-more btn-default" value="See before" id="see-more-event"
+ data-start="'.$start.'" data-action="getEventsBefores" >
+ 			</div>';
+
+		}
 	   $result .= '</div></div>';
    }
    return $result;
