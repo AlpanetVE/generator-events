@@ -299,9 +299,9 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
              </div>
              <div class="buttons">
                  <div class="qq-upload-button-selector qq-upload-button">
-                     <span class="glyphicon glyphicon-camera"> </span>
+                     <span class="glyphicon glyphicon-camera green-btn-drop"> </span>
                  </div>
-                 <button type="button" id="trigger-upload" class="btn btn-primary">
+                 <button type="button" id="trigger-upload" class="btn btn-primary green-btn-drop">
                      <span class="glyphicon glyphicon-upload"></span> Upload
                  </button>
              </div>
@@ -419,18 +419,23 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
               <h4>  <?php echo $comentario->nic;?> </h4>
             </p>
 
-            <div class="comentarios">
-            <p>
-              <?php echo $comentario->comentario;?>
-            </p>
-            </div>
+            <?php if (!empty($comentario->comentario)) { ?>
+            	<div class="comentarios">
+					<p>
+						<?php echo $comentario->comentario;?>
+					</p>
+				</div>
+            <?php } ?>            
+
+
+
             <?php if(!empty($comentario->img)):
                 $img=basename($comentario->img);
                ?>
             <div class="img-comentario">
               <p>
-                <?php echo cl_image_tag($img, array("alt"=>"sample","width"=>200, "crop"=>"thumb","cloud_name" => "darwin123")) ?>
-              </p> <span> <a href="<?php echo $comentario->img ?>" target="_blank">View full image </a> </span>
+                <?php echo '<a href="'.$comentario->img.'" target="_blank">'.cl_image_tag($img, array("alt"=>"sample","width"=>200, "crop"=>"thumb","cloud_name" => "darwin123")).'</a>' ?>
+              </p>
             </div>
           <?php endif;?>
               <h5 class="pull-right"> <?php echo $comentario->fecha ?> </h5>
@@ -453,11 +458,11 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
               <h1> Leave a Comment</h1>
 
     <form class="form-coments" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="post">
-      <div class="col-xs-2">
+      <div class="div-comments">
 				<?php echo get_avatar($user->ID,64); ?>
 				<!-- <img class="top-timeline-tweet-box-user-image avatar size32" src="https://pbs.twimg.com/profile_images/774341475802968064/qtMQRmhI_normal.jpg" alt="Oscar J. Lopez"> -->
       </div>
-      <div class="" style="margin-bottom: 10px;">
+      <div class="div-comments" >
           <textarea name="comment" rows="5" cols="55" maxlength="254" placeholder="Your Comment"></textarea>
 
         </div>

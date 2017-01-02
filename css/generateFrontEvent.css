@@ -5,7 +5,10 @@
 	float: left;
 }
 .btn-submit-comment{
-	float: right;
+	/*float: right;*/
+	width: 81%;
+    text-align: right;
+    margin: 10px 5px 5px 1px;
 }
 .input-commed textarea{
 	width: 100% !important;
@@ -109,7 +112,20 @@ transition: background-color 0.2s ease 0s;
 }
 
 .comentarios{
-	margin: 30px;
+	margin: 20px;
+}
+.div-comments{
+	float: left;
+	margin: 2px 10px 5px 0px;
+}
+.glyphicon.glyphicon-camera{
+	top: 6px;
+}
+.green-btn-drop{
+	height: 43px;
+}
+.div-comments img{
+	border-radius: 5px;
 }
 
 .form-coments textarea:focus {
