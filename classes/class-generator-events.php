@@ -107,7 +107,7 @@ class GeneratorEvents {
 			`opening_hour` time DEFAULT NULL,
 			`closed_hour` time DEFAULT NULL,
 			`name_link` varchar(255) DEFAULT NULL,
-			`rating` int(1) DEFAULT NULL)";
+			`rating` int(1) DEFAULT 0)";
 
 
 
