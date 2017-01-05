@@ -390,6 +390,12 @@ $results=$this->db->update($this->table_sites,array(
 	}
 //
 
+public function getPhotosEvent($id){
+	$sql="SELECT img_link as ruta_img, comment as comentario
+ FROM $this->table_user_event_comment where img_link<>'' and id_event=1 limit 6";
+
+ return $this->db->get_results($sql);
+}
 
 	public function getCountSites(){
 		$count = $this->db->get_var("SELECT COUNT(*) FROM $this->table_sites");
