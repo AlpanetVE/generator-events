@@ -159,11 +159,12 @@ transition: background-color 0.2s ease 0s;
 
 
 .demo-gallery > ul > li {
-      float: left;
-      width: 200px;
-      padding-right: 0px;
-     padding-left: 0px;
-     margin-right: 20px;
+  float: left;
+  width: 200px;
+  padding-right: 0px;
+  padding-left: 0px;
+  margin-right: 9px;
+  margin-bottom: 10px;
 }
   .demo-gallery > ul > li a {
   border: 3px solid #FFF;
