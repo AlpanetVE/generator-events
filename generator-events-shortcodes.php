@@ -511,34 +511,30 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 
 	</div>
 		<?php } ?>
+		<hr class="simple">
 		<div class="row">
-
-		  <div class="col-sm-12 home">
-		      <div class="demo-gallery">
-		      <h2> Event Gallery </h2>
-		            <ul id="lightgallery" class="list-unstyled row">
-		<?php  foreach ($photosArray as $foto):
-		      $img=basename($foto->ruta_img);
-		       $coment=$foto->comentario;
-		?>
-		          <li class="col-xs-6 col-sm-4 col-md-3"  data-src=<?php echo $foto->ruta_img ?> data-sub-html=<?php echo $coment;?>>
-		                    <a href="">
-		                        <img class="img-responsive" src=<?php echo cloudinary_url($img,
-		                        array("width"=>200,"cloud_name" => "darwin123"));  ?> >
-		                    </a>
-		                </li>
-		       <?php endforeach; ?>
-		            </ul>
-		        </div>
-		  </div>
+			<div class="col-sm-12 home">
+				<div class="demo-gallery">
+				<h2> Event Gallery </h2>
+				<ul id="lightgallery" class="list-unstyled row">
+					<?php  foreach ($photosArray as $foto):
+					$img=basename($foto->ruta_img);
+					$coment=$foto->comentario;
+					?>
+					<li class="col-xs-6 col-sm-4 col-md-3"  data-src=<?php echo $foto->ruta_img ?> data-sub-html=<?php echo $coment;?>>
+						<a href="">
+						<img class="img-responsive" src=<?php echo cloudinary_url($img,
+						array("width"=>200,"cloud_name" => "darwin123"));  ?> >
+						</a>
+					</li>
+					<?php endforeach; ?>
+				</ul>
+				</div>
+			</div>
 		</div>
 
-					</div>
-					<hr class="simple">
-
-
-
-
+	</div>
+	
 	  			</div>
 	  			<div class="col-xs-12 col-md-3 ">
 	  				<div class="tittle-right" >
