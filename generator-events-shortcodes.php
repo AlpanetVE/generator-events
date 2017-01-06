@@ -30,15 +30,15 @@ function registerFileFront(){
 
 function registerLightGallery(){
 	wp_register_style('lightgallery', STAR_URL . 'css/lightgallery.min.css', array(), '1', 'all');
-	wp_register_script('picturefull', "https://cdn.jsdelivr.net/picturefill/2.3.1/picturefill.min.js", '','',true);
-  wp_register_script('lightgallery-js', STAR_URL . 'js/lightgallery.js', '','',true);
-  wp_register_script('lg-fullscreen', STAR_URL . 'js/lg-fullscreen.js', '','',true);
-  wp_register_script('lg-thumbnail', STAR_URL . 'js/lg-thumbnail.js', '','',true);
-  wp_register_script('lg-video', STAR_URL . 'js/lg-video.js', '','',true);
-  wp_register_script('lg-autoplay', STAR_URL . 'js/lg-autoplay.js', '','',true);
-	wp_register_script('lg-zoom', STAR_URL . 'js/lg-zoom.js', '','',true);
-  wp_register_script('lg-hash', STAR_URL . 'js/lg-hash.js', '','',true);
-  wp_register_script('lg-pager', STAR_URL . 'js/lg-pager.js', '','',true);
+	wp_register_script('picturefull', "https://cdn.jsdelivr.net/picturefill/2.3.1/picturefill.min.js", '','');
+  wp_register_script('lightgallery-js', STAR_URL . 'js/lightgallery.js', array('jquery'),'',true);
+  wp_register_script('lg-fullscreen', STAR_URL . 'js/lg-fullscreen.js', array('jquery'),'',true);
+  wp_register_script('lg-thumbnail', STAR_URL . 'js/lg-thumbnail.js', array('jquery'),'',true);
+  wp_register_script('lg-video', STAR_URL . 'js/lg-video.js', array('jquery'),'',true);
+  wp_register_script('lg-autoplay', STAR_URL . 'js/lg-autoplay.js', array('jquery'),'',true);
+	wp_register_script('lg-zoom', STAR_URL . 'js/lg-zoom.js', array('jquery'),'',true);
+  wp_register_script('lg-hash', STAR_URL . 'js/lg-hash.js', array('jquery'),'',true);
+  wp_register_script('lg-pager', STAR_URL . 'js/lg-pager.js', array('jquery'),'',true);
 	wp_register_script('mousewheel', STAR_URL . 'js/jquery.mousewheel.min.js', array('jquery'),'',true);
 
 
@@ -511,29 +511,8 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 
 	</div>
 		<?php } ?>
-		<div class="row">
-
-		  <div class="col-sm-12 home">
-		      <div class="demo-gallery">
-		      <h2> Event Gallery </h2>
-		            <ul id="lightgallery" class="list-unstyled row">
-		<?php  foreach ($photosArray as $foto):
-		      $img=basename($foto->ruta_img);
-		       $coment=$foto->comentario;
-		?>
-		          <li class="col-xs-6 col-sm-4 col-md-3"  data-src=<?php echo $foto->ruta_img ?> data-sub-html=<?php echo $coment;?>>
-		                    <a href="">
-		                        <img class="img-responsive" src=<?php echo cloudinary_url($img,
-		                        array("width"=>200,"cloud_name" => "darwin123"));  ?> >
-		                    </a>
-		                </li>
-		       <?php endforeach; ?>
-		            </ul>
-		        </div>
-		  </div>
-		</div>
-
 					</div>
+
 					<hr class="simple">
 
 
@@ -575,6 +554,32 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 		  			?>
 				</div>
 	  		</div>
+				<div class="row">
+
+					<div class="col-sm-12 home">
+							<div class="demo-gallery">
+							<h2> Event Gallery </h2>
+										<ul id="lightgallery" class="list-unstyled row">
+				<?php  foreach ($photosArray as $foto):
+							$img=basename($foto->ruta_img);
+							 $coment=$foto->comentario;
+				?>
+									<li class="col-xs-6 col-sm-4 col-md-3"  data-src=<?php echo $foto->ruta_img ?> data-sub-html=<?php echo $coment;?>>
+														<a href="">
+																<img class="img-responsive" src=<?php echo cloudinary_url($img,
+																array("width"=>200,"cloud_name" => "darwin123"));  ?> >
+														</a>
+												</li>
+							 <?php endforeach; ?>
+										</ul>
+								</div>
+					</div>
+				</div>
+				<script type="text/javascript">
+								jQuery(document).ready(function($){
+										$('#lightgallery').lightGallery();
+								});
+								</script>
         <script>
         url_endpoint='<?php echo ALPAGE_URL.'endpoint.php' ?>';
         	            var manualUploader = new qq.FineUploader({
@@ -604,11 +609,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
         	            });
         	        </script>
 
-									<script type="text/javascript">
-									        jQuery(document).ready(function($){
-									            $('#lightgallery').lightGallery();
-									        });
-									        </script>
+
 			<?php
 			$result = ob_get_clean();
 
