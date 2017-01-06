@@ -515,7 +515,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 		<hr class="simple">
 		<div class="row">
 			<div class="col-sm-12 home">
-				<div class="demo-gallery">
+				<div class="demo-gallery text-center">
 				<h2> Event Gallery </h2>
 				<ul id="lightgallery" class="list-unstyled row">
 					<?php  foreach ($photosArray as $foto):
