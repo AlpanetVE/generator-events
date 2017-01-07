@@ -385,8 +385,8 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
 
 			ob_start();
 
-			$thumb_w = '500';
-			$thumb_h = '200';
+			$thumb_w = '1000';
+			$thumb_h = '400';
 			if ($value['poster']){
 				$src = ALPAGE_URL_UPLOADS.$value['poster'];
 
