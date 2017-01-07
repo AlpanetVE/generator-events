@@ -197,7 +197,7 @@ class GeneratorEventList extends WP_List_Table {
 
 
 					<div class="form-field">
-						<label for="table-latitude"><?php _e( 'Upload Poster', 'GeneratorEvents' ); ?> <span style="color: red;font-size: 11px;"><?php _e( '(550px with 200px height)', 'GeneratorEvents' ); ?></span>  :</label>
+						<label for="table-latitude"><?php _e( 'Upload Poster', 'GeneratorEvents' ); ?> <span style="color: red;font-size: 11px;"><?php _e( '(1000px with 400px height)', 'GeneratorEvents' ); ?></span>  :</label>
 
 
 					<div class="box">
