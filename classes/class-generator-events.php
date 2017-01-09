@@ -540,6 +540,39 @@ public function getPhotosEvent($id){
 
 	 }
 
+public function uploadPosterMap($img){
+$ruta_imagen = ALPAGE_PATH_UPLOADS.$img;
+$info_imagen = getimagesize($ruta_imagen);
+$imagen_ancho = $info_imagen[0];
+$imagen_alto = $info_imagen[1];
+
+
+//Calculamos la altura final manteniendo proporciones
+$anchura_final= 270;
+$altura_final=(270 * $imagen_alto)/$imagen_ancho;
+
+//Creamos una variable imagen a partir de la imagen original
+$img_original = imagecreatefromjpeg($ruta_imagen);
+
+//Creamos una imagen en blanco de tamaño $anchura_final  por $altura_final .
+$tmp_img=imagecreatetruecolor($anchura_final,$altura_final);
+
+//Copiamos $img_original sobre la imagen que acabamos de crear en blanco ($tmp)
+imagecopyresampled($tmp_img,$img_original,0,0,0,0,$anchura_final, $altura_final,$imagen_ancho,$imagen_alto);
+
+imagedestroy($img_original);
+
+$nombre_mapa=ALPAGE_PATH_UPLOADS."map_".$img;
+
+	//Definimos la calidad de la imagen final
+$calidad=95;
+//Se crea la imagen final en el directorio indicado
+//var_dump($_SERVER['DOCUMENT_ROOT']);
+$res=imagejpeg($tmp_img,$nombre_mapa,$calidad);
+//var_dump($res);
+//return $nombre_mapa;
+}
+
 	public function uploadFile(){
 
 		if (!isset($_FILES['poster']['name']) || empty($_FILES['poster']['name']) || ($_FILES[uploadedfile][size] >20000000)) {
@@ -550,9 +583,15 @@ public function getPhotosEvent($id){
 		$nameFile 		= $this->sanear_string(basename( date("d-m-Y H:i:s").$_FILES['poster']['name']));
 		$target_path = $target_path . $nameFile;
 
+
 		if(!move_uploaded_file($_FILES['poster']['tmp_name'], $target_path)) {
 			$nameFile='';
 		}
+	if(!empty($nameFile)){
+			$this->uploadPosterMap($nameFile);
+	}
+
+
 		return $nameFile;
 	}
 
