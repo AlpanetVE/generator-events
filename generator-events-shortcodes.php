@@ -605,7 +605,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
         	                    validation: {
         	                        allowedExtensions: ['jpeg', 'jpg', 'png', 'gif','mp4','webm','ogg'],
         	                         itemLimit: 1,
-        	                         sizeLimit: 4048000 // 50 kB = 50 * 1024 bytes
+        	                         sizeLimit: 8048000 // 50 kB = 50 * 1024 bytes
         	                    },
         	                autoUpload: false,
         	                debug: true
