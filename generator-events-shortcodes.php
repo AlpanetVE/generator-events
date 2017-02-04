@@ -329,6 +329,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
              <div class="buttons">
                  <div class="qq-upload-button-selector qq-upload-button">
                      <span class="glyphicon glyphicon-camera green-btn-drop"> </span>
+										<span class="glyphicon glyphicon-facetime-video">  </span>
                  </div>
                  <button type="button" id="trigger-upload" class="btn btn-primary green-btn-drop">
                      <span class="glyphicon glyphicon-upload"></span> Upload
@@ -604,7 +605,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
         	                    validation: {
         	                        allowedExtensions: ['jpeg', 'jpg', 'png', 'gif','mp4','webm','ogg'],
         	                         itemLimit: 1,
-        	                         sizeLimit: 2048000 // 50 kB = 50 * 1024 bytes
+        	                         sizeLimit: 4048000 // 50 kB = 50 * 1024 bytes
         	                    },
         	                autoUpload: false,
         	                debug: true

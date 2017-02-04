@@ -121,6 +121,11 @@ transition: background-color 0.2s ease 0s;
 .glyphicon.glyphicon-camera{
 	top: 6px;
 }
+
+.glyphicon.glyphicon-facetime-video{
+	top: 6px;
+}
+
 .green-btn-drop{
 	height: 43px;
 }
