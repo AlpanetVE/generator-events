@@ -457,7 +457,6 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
             <?php } ?>
 
 
-
             <?php if(!empty($comentario->img)):
                 $img=basename($comentario->img);
                ?>
@@ -467,6 +466,18 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
               </p>
             </div>
           <?php endif;?>
+
+<?php if(!empty($comentario->video)):
+			$video=basename($comentario->video);
+	?>
+	<div class="img-comentario">
+		<p>
+			<?php echo cl_video_tag($video, array("alt"=>"sample","width"=>200,"cloud_name" => "darwin123")); ?>
+		</p>
+	</div>
+<?php endif;?>
+
+
               <h5 class="pull-right"> <?php echo $comentario->fecha ?> </h5>
         </div>
     </div>
@@ -591,7 +602,7 @@ function alpage_detail_event_shortchode( $atts ) { // New function parameter $co
         	                    }
         	                },
         	                    validation: {
-        	                        allowedExtensions: ['jpeg', 'jpg', 'png', 'gif'],
+        	                        allowedExtensions: ['jpeg', 'jpg', 'png', 'gif','mp4','webm','ogg'],
         	                         itemLimit: 1,
         	                         sizeLimit: 2048000 // 50 kB = 50 * 1024 bytes
         	                    },

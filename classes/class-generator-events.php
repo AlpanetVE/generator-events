@@ -178,8 +178,18 @@ public function sendCloudinary($file){
 //$ruta=getcwd().'../../'.$file;
 
 $ruta=ALPAGE_ABSPATH.$file;
-				//$ruta=ALPAGE_URL.$file;
-				 $respuesta=\Cloudinary\Uploader::upload($ruta);
+$extension = end(explode(".", $ruta));
+
+//die();
+if($extension=='mp4' or $extension=='webm' or $extension=='ogg' ){
+
+$respuesta=\Cloudinary\Uploader::upload($ruta,
+	    array("resource_type" => "video"));
+}
+	else{
+$respuesta=\Cloudinary\Uploader::upload($ruta);
+	}			//$ruta=ALPAGE_URL.$file;
+
 
 			return $respuesta;
 }
@@ -202,7 +212,17 @@ $url=$values['url'];
 
 if(isset($_COOKIE['ruta_foto_temp'])){
 $res=$this->sendCloudinary($_COOKIE['ruta_foto_temp']);
-$imgLink=$res['url'];
+$extension = end(explode(".", $_COOKIE['ruta_foto_temp']));
+
+
+	if($extension=='mp4' or $extension=='webm' or $extension=='ogg' ){
+			$imgLink='';
+			$videoLink=$res['url'];
+	}else{
+			$imgLink=$res['url'];
+			$videoLink='';
+	}
+
 unlink(ALPAGE_ABSPATH.$_COOKIE['ruta_foto_temp']);
 setcookie("ruta_foto_temp", "", time() - 3600,'/');
 }
@@ -211,18 +231,21 @@ setcookie("ruta_foto_temp", "", time() - 3600,'/');
 $resp=$this->db->query( $this->db->prepare(
 	"
 		INSERT INTO $this->table_user_event_comment
-		(user_id, id_event, comment, img_link, date_time, status)
-		VALUES ( %d, %d, %s, %s,now(), 1 )
+		(user_id, id_event, comment, img_link, video_link , date_time, status)
+		VALUES ( %d, %d, %s, %s, %s, now(), 1 )
 	",
   array(
         $user->ID,
         $id_event,
         $comment,
-				$imgLink
+				$imgLink,
+				$videoLink
        )
-    ));
-
 	//if($resp)	{
+));
+// $this->db->show_errors();
+// $this->db->print_error();
+// die();
 
 		wp_redirect($url);
 		exit;
@@ -378,7 +401,7 @@ $results=$this->db->update($this->table_sites,array(
 	public function getComentsEvent($id){
 		$user_table=$this->db->prefix."users";
 
-	$sqlSelect="SELECT C.comment AS comentario, C.img_link as img, U.display_name AS nic, U.ID as id, C.date_time as fecha
+	$sqlSelect="SELECT C.comment AS comentario, C.img_link as img, C.video_link as video, U.display_name AS nic, U.ID as id, C.date_time as fecha
  FROM $this->table_user_event_comment C
  INNER JOIN $user_table	 U ON C.user_id=U.ID
  WHERE C.status=1 AND C.id_event=$id ORDER BY C.date_time DESC";
